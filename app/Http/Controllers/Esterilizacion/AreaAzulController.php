@@ -29,7 +29,7 @@ $proceso->load(['servicio', 'material']);
 
         return view('esterilizacion.azul.create', [
             'proceso' => $proceso,
-            'usuarios' => Usuario::query()->orderBy('id')->get(),
+            'usuarios' => Usuario::query()->where('activo', 1)->orderBy('id')->get(),
         ]);
     }
 

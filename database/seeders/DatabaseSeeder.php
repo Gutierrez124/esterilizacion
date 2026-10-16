@@ -39,12 +39,8 @@ class DatabaseSeeder extends Seeder
             ['servicio_id' => 5, 'nombre' => 'RINONERA'],
         ]);
 
-        DB::table('equipos_biomedicos')->insert([
-            ['nombre' => 'AUTOCLAVE'],
-            ['nombre' => 'LAVADORA DESCONTAMINADORA'],
-            ['nombre' => 'ULTRASONICA'],
-            ['nombre' => 'OTRO'],
-            ['nombre' => 'NO CORRESPONDE'],
-        ]);
+        $this->call(InstrumentalSeeder::class);
+
+        $this->call(AdminSeeder::class);
     }
 }

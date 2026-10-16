@@ -24,7 +24,12 @@
         </div>
         <div>
             <label for="empaque">Empaque</label>
-            <input id="empaque" name="empaque" value="{{ old('empaque') }}" maxlength="100" required>
+            <select id="empaque" name="empaque" required>
+                <option value="">Seleccione</option>
+                @foreach(['PAPEL CREPADO', 'MANGA', 'PAPEL NO TEJIDO'] as $opcion)
+                    <option value="{{ $opcion }}" @selected(old('empaque') === $opcion)>{{ $opcion }}</option>
+                @endforeach
+            </select>
         </div>
         <div>
             <label for="tipo_carga">Tipo de carga</label>
@@ -40,7 +45,12 @@
         </div>
         <div>
             <label for="ib">IB</label>
-            <input id="ib" name="ib" value="{{ old('ib') }}" maxlength="50" required>
+            <select id="ib" name="ib" required>
+                <option value="">Seleccione</option>
+                @foreach(['VIRO', 'NO VIRO', 'SI VIRO', 'REACCIONO', 'NO REACCIONO'] as $opcion)
+                    <option value="{{ $opcion }}" @selected(old('ib') === $opcion)>{{ $opcion }}</option>
+                @endforeach
+            </select>
         </div>
         <div>
             <label for="operador_id">Operador</label>
@@ -51,7 +61,7 @@
                 @endforeach
             </select>
         </div>
-        <div style="display:flex; align-items:end;">
+        <div class="field-actions-end">
             <button class="btn blue" type="submit">Guardar Area Azul</button>
         </div>
     </form>

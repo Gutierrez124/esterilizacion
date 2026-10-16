@@ -16,11 +16,22 @@ class StoreAreaAzulRequest extends FormRequest
     {
         return [
             'hora' => ['required', 'date_format:H:i'],
-            'empaque' => ['required', 'string', 'max:100'],
+
+            'empaque' => ['required', Rule::in(['PAPEL CREPADO', 'MANGA', 'PAPEL NO TEJIDO'])],
             'tipo_carga' => ['required', Rule::in(['INSTRUMENTAL', 'TEXTIL', 'GOMA'])],
             'numero_carga' => ['required', 'integer', 'min:1'],
-            'ib' => ['required', 'string', 'max:50'],
-            'operador_id' => ['required', 'integer', 'exists:usuarios,id'],
+            'ib' => ['required', Rule::in(['VIRO', 'NO VIRO', 'SI VIRO', 'REACCIONO', 'NO REACCIONO'])],
+
+            'operador_id' => ['required', 'integer', Rule::exists('usuarios', 'id')->where(fn ($q) => $q->where('activo', 1))],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'empaque.in' => 'El empaque debe ser PAPEL CREPADO, MANGA o PAPEL NO TEJIDO.',
+            'ib.in' => 'El IB debe ser VIRO, NO VIRO, SI VIRO, REACCIONO o NO REACCIONO.',
+            'operador_id.exists' => 'El operador debe ser un usuario activo del sistema.',
         ];
     }
 }

@@ -21,4 +21,9 @@ class AreaAzul extends Model
     {
         return $this->belongsTo(Usuario::class, 'operador_id');
     }
+
+    public function registradoPor()
+    {
+        return $this->belongsTo(Usuario::class, 'registrado_por_id');
+    }
 }

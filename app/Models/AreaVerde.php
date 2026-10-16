@@ -30,4 +30,14 @@ class AreaVerde extends Model
     {
         return $this->belongsTo(Usuario::class, 'recibe_id');
     }
+
+    public function personaDescarga()
+    {
+        return $this->belongsTo(Usuario::class, 'descarga_id');
+    }
+
+    public function registradoPor()
+    {
+        return $this->belongsTo(Usuario::class, 'registrado_por_id');
+    }
 }

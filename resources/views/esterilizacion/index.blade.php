@@ -3,10 +3,10 @@
 @section('title', 'Procesos de esterilizacion')
 
 @section('content')
-    <div class="detail-actions"><h1 style="margin:0;">Procesos de esterilizacion</h1><a class="btn primary" href="{{ route('esterilizacion.roja.create') }}">Nuevo proceso</a></div>
+    <div class="detail-actions"><h1 class="no-margin">Procesos de esterilizacion</h1><a class="btn primary" href="{{ route('esterilizacion.roja.create') }}">Nuevo proceso</a></div>
 
     <section class="panel">
-        <form method="GET" action="{{ route('esterilizacion.procesos.index') }}" class="grid">
+        <form method="GET" action="{{ route('esterilizacion.procesos.index') }}" class="grid filters-grid">
             <div>
                 <label for="fecha_desde">Desde</label>
                 <input id="fecha_desde" type="date" name="fecha_desde" value="{{ request('fecha_desde') }}">
@@ -41,7 +41,7 @@
                     @endforeach
                 </select>
             </div>
-            <div style="display:flex; gap:8px; align-items:end;">
+            <div class="field-actions">
                 <button class="btn primary" type="submit">Filtrar</button>
                 <a class="btn" href="{{ route('esterilizacion.procesos.index') }}">Limpiar</a>
             </div>

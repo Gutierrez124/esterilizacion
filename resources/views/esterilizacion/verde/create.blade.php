@@ -30,8 +30,13 @@
                 <input id="hora_entrega" type="time" name="hora_entrega" value="{{ old('hora_entrega') }}" required>
             </div>
             <div>
-                <label for="hora_descarga">Hora de descarga</label>
-                <input id="hora_descarga" type="time" name="hora_descarga" value="{{ old('hora_descarga') }}" required>
+                <label for="descarga_id">Descarga</label>
+                                <select id="descarga_id" name="descarga_id" required>
+                    <option value="">Seleccione</option>
+                    @foreach($usuarios as $usuario)
+                        <option value="{{ $usuario->id }}" @selected(old('descarga_id') == $usuario->id)>{{ $usuario->nombre_completo }}</option>
+                    @endforeach
+                </select>
             </div>
             <div>
                 <label for="persona_entrega_id">Persona que entrega</label>

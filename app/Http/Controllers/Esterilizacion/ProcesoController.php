@@ -12,7 +12,7 @@ class ProcesoController extends Controller
     public function index(Request $request)
     {
 $procesos = ProcesoEsterilizacion::query()
-            ->with(['servicio', 'material', 'personaRecibe', 'personaEntrega', 'operador', 'equipoBiomedico', 'areaAzul.operador', 'areaVerde.personaEntrega', 'areaVerde.personaRecibe'])
+            ->with(['servicio', 'material', 'personaRecibe', 'personaEntrega', 'operador', 'areaAzul.operador', 'areaVerde.personaEntrega', 'areaVerde.personaRecibe'])
             ->when($request->filled('fecha_desde'), fn ($query) => $query->whereDate('fecha', '>=', $request->fecha_desde))
             ->when($request->filled('fecha_hasta'), fn ($query) => $query->whereDate('fecha', '<=', $request->fecha_hasta))
             ->when($request->filled('servicio_id'), fn ($query) => $query->where('servicio_id', $request->servicio_id))
@@ -42,10 +42,12 @@ $proceso->load([
             'personaRecibe',
             'personaEntrega',
             'operador',
-            'equipoBiomedico',
             'areaAzul.operador',
             'areaVerde.personaEntrega',
             'areaVerde.personaRecibe',
+            'creadoPor',
+            'instrumentos',
+
         ]);
 
         return view('esterilizacion.show', compact('proceso'));

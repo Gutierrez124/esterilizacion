@@ -37,6 +37,8 @@
         <div><span>Identificador</span>{{ $proceso->getKey() }}</div>
         <div><span>Servicio</span>{{ $servicio }}</div>
         <div><span>Area actual</span><span class="badge {{ $proceso->estado_actual }}">{{ $proceso->estado_actual }}</span></div>
+        <div><span>Registrado por</span>{{ $usuario($proceso->creadoPor) }}</div>
+
     </div>
 </section>
 
@@ -51,9 +53,36 @@
         <div><span>Material/Instrumental</span>{{ $material }}</div>
         <div><span>Cantidad de piezas</span>{{ $proceso->cantidad_piezas }}</div>
         <div><span>Tipo de lavado</span>{{ $proceso->tipo_lavado }}</div>
-        <div><span>Equipo biomedico a usar</span>{{ $proceso->equipoBiomedico?->nombre ?? $proceso->equipoBiomedico?->descripcion ?? 'Equipo '.$proceso->equipo_biomedico_id }}</div>
+        <div><span>Equipo biomedico a usar</span>{{ $proceso->equipo_biomedico }}</div>
         <div><span>OP</span>{{ $usuario($proceso->operador) }}</div>
     </div>
+</section>
+<section class="panel">
+    <div class="section-title red">Detalle de instrumental recibido</div>
+    @if($proceso->instrumentos->count())
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-120">Cantidad real</th>
+                    <th>Instrumento</th>
+                    <th>Codigo</th>
+                    <th class="col-130">Predeterminada</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($proceso->instrumentos as $pieza)
+                    <tr>
+                        <td><strong>{{ $pieza->cantidad_real }}</strong></td>
+                        <td>{{ $pieza->nombre_instrumento }}</td>
+                        <td>{{ $pieza->codigo_instrumento ?? '—' }}</td>
+                        <td>{{ $pieza->cantidad_predeterminada }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <p class="muted">Este proceso no tiene detalle de instrumental registrado.</p>
+    @endif
 </section>
 
 <section class="panel">
@@ -78,7 +107,7 @@
         <div class="summary">
             <div><span>Entrega - fecha</span>{{ $fecha($proceso->areaVerde->fecha_entrega) }}</div>
             <div><span>Entrega - hora</span>{{ $hora($proceso->areaVerde->hora_entrega) }}</div>
-            <div><span>Descarga</span>{{ $hora($proceso->areaVerde->hora_descarga) }}</div>
+            <div><span>Descarga</span>{{ $usuario($proceso->areaVerde->personaDescarga) }}</div>
             <div><span>Entrega</span>{{ $usuario($proceso->areaVerde->personaEntrega) }}</div>
             <div><span>Recibe</span>{{ $usuario($proceso->areaVerde->personaRecibe) }}</div>
         </div>

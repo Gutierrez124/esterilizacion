@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="detail-actions">
-    <h1 style="margin:0;">Pendientes de Area Azul</h1>
+    <h1 class="no-margin">Pendientes de Area Azul</h1>
     <a class="btn primary" href="{{ route('esterilizacion.roja.create') }}">Nuevo proceso</a>
 </div>
 <section class="panel">

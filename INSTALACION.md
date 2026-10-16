@@ -57,7 +57,7 @@ Esto crea:
 - `usuarios`
 - `servicios`
 - `materiales`
-- `equipos_biomedicos`
+- `equipos_biomedicos` (eliminada: ahora enum `equipo_biomedico` en `proceso_esterilizacion`)
 - `proceso_esterilizacion`
 - `area_azul`
 - `area_verde`

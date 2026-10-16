@@ -2,20 +2,50 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Usuario extends Model
+class Usuario extends Authenticatable
 {
-    protected $table = 'usuarios';
+    use Notifiable;
 
-    protected $guarded = [];
+    protected $table = 'usuarios';
 
     public $timestamps = false;
 
+    protected $fillable = [
+        'nombres',
+        'apellidos',
+        'email',
+        'password',
+        'rol',
+        'activo',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'activo' => 'boolean',
+        'password' => 'hashed',
+    ];
+
     public function getNombreCompletoAttribute(): string
     {
-        return $this->nombre_completo
-            ?? trim(($this->nombres ?? '').' '.($this->apellidos ?? ''))
-            ?: ($this->nombre ?? 'Usuario '.$this->getKey());
+        return trim(($this->nombres ?? '').' '.($this->apellidos ?? ''))
+            ?: ($this->email ?? 'Usuario '.$this->getKey());
+    }
+
+    public function procesosCreados()
+    {
+        return $this->hasMany(ProcesoEsterilizacion::class, 'creado_por_id');
+    }
+
+    public function auditorias()
+    {
+        return $this->hasMany(Auditoria::class, 'usuario_id');
     }
 }
+

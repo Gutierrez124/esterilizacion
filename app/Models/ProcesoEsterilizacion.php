@@ -44,10 +44,19 @@ class ProcesoEsterilizacion extends Model
     {
         return $this->belongsTo(Usuario::class, 'operador_id');
     }
-
-    public function equipoBiomedico()
+    public function creadoPor()
     {
-        return $this->belongsTo(EquipoBiomedico::class, 'equipo_biomedico_id');
+        return $this->belongsTo(Usuario::class, 'creado_por_id');
+    }
+
+    public function instrumentos()
+    {
+        return $this->hasMany(ProcesoInstrumento::class, 'proceso_id');
+    }
+
+    public function auditorias()
+    {
+        return $this->hasMany(Auditoria::class, 'proceso_id');
     }
 
     public function areaAzul()

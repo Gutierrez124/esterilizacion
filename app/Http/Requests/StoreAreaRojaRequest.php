@@ -14,13 +14,15 @@ class StoreAreaRojaRequest extends FormRequest
 
     public function rules(): array
     {
+        $materialId = $this->input('material_id');
+
         return [
             'servicio_id' => ['required', 'integer', 'exists:servicios,id'],
             'fecha' => ['required', 'date'],
             'turno' => ['required', Rule::in(['DIURNO', 'NOCTURNO'])],
             'hora' => ['required', 'date_format:H:i'],
-            'persona_recibe_id' => ['required', 'integer', 'exists:usuarios,id'],
-            'persona_entrega_id' => ['required', 'integer', 'exists:usuarios,id'],
+            'persona_recibe_id' => ['required', 'integer', Rule::exists('usuarios', 'id')->where(fn ($q) => $q->where('activo', 1))],
+            'persona_entrega_id' => ['required', 'integer', Rule::exists('usuarios', 'id')->where(fn ($q) => $q->where('activo', 1))],
             'material_id' => [
                 'required',
                 'integer',
@@ -29,10 +31,18 @@ class StoreAreaRojaRequest extends FormRequest
                     ->where('activo', 1)
                 ),
             ],
-            'cantidad_piezas' => ['required', 'integer', 'min:1'],
             'tipo_lavado' => ['required', Rule::in(['ULTRASONICA', 'MANUAL', 'LAVADORA_DESCONTAMINADORA', 'NO_CORRESPONDE'])],
-            'equipo_biomedico_id' => ['required', 'integer', 'exists:equipos_biomedicos,id'],
-            'operador_id' => ['required', 'integer', 'exists:usuarios,id'],
+            'equipo_biomedico' => ['required', Rule::in(['AUTOCLAVE'])],
+            'operador_id' => ['required', 'integer', Rule::exists('usuarios', 'id')->where(fn ($q) => $q->where('activo', 1))],
+
+            'piezas' => ['required', 'array', 'min:1'],
+            'piezas.*.instrumento_id' => [
+                'required',
+                'integer',
+
+                Rule::exists('material_instrumentos', 'instrumento_id')->where(fn ($query) => $query->where('material_id', $materialId)),
+            ],
+            'piezas.*.cantidad_real' => ['required', 'integer', 'min:0'],
         ];
     }
 
@@ -40,7 +50,12 @@ class StoreAreaRojaRequest extends FormRequest
     {
         return [
             'material_id.exists' => 'El material seleccionado no esta activo o no pertenece al servicio elegido.',
-            'cantidad_piezas.min' => 'La cantidad de piezas debe ser mayor que cero.',
+            'persona_recibe_id.exists' => 'La persona que recibe debe ser un usuario activo del sistema.',
+            'persona_entrega_id.exists' => 'La persona que entrega debe ser un usuario activo del sistema.',
+            'operador_id.exists' => 'El operador debe ser un usuario activo del sistema.',
+            'piezas.required' => 'Debes confirmar las piezas del conjunto.',
+            'piezas.*.instrumento_id.exists' => 'Una de las piezas no pertenece al conjunto seleccionado.',
+            'piezas.*.cantidad_real.min' => 'Las cantidades no pueden ser negativas.',
         ];
     }
 }
