@@ -19,8 +19,8 @@
         <a href="{{ route('esterilizacion.instrumental.index') }}" class="nav-item @if(request()->routeIs('esterilizacion.instrumental.*','esterilizacion.instrumentos.*')) active @endif">
             <span class="nav-icon">&#9878;</span> Instrumentos por material
         </a>
-        <a href="{{ route('esterilizacion.auditorias.index') }}" class="nav-item @if(request()->routeIs('esterilizacion.auditorias.*')) active @endif">
-            <span class="nav-icon">&#128203;</span> Auditorias
+        <a href="{{ route('esterilizacion.reportes.index') }}" class="nav-item @if(request()->routeIs('esterilizacion.reportes.*')) active @endif">
+            <span class="nav-icon">&#128202;</span> Reportes Excel
         </a>
         <div class="spacer"></div>
         @auth

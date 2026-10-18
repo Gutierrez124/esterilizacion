@@ -4,9 +4,9 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Esterilizacion\AreaAzulController;
 use App\Http\Controllers\Esterilizacion\AreaRojaController;
 use App\Http\Controllers\Esterilizacion\AreaVerdeController;
-use App\Http\Controllers\Esterilizacion\AuditoriaController;
 use App\Http\Controllers\Esterilizacion\InstrumentalController;
 use App\Http\Controllers\Esterilizacion\ProcesoController;
+use App\Http\Controllers\Esterilizacion\ReporteController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -46,7 +46,8 @@ Route::middleware('auth')->prefix('esterilizacion')->name('esterilizacion.')->gr
     Route::put('instrumental/{material}/estado', [InstrumentalController::class, 'cambiarEstado'])->name('instrumental.estado');
     Route::put('instrumentos/{instrumento}/estado', [InstrumentalController::class, 'cambiarEstadoInstrumento'])->name('instrumentos.estado');
 
-    Route::get('auditorias', [AuditoriaController::class, 'index'])->name('auditorias.index');
-    Route::get('auditorias/excel', [AuditoriaController::class, 'exportar'])->name('auditorias.excel');
-    Route::get('auditorias/usuarios/{usuario}', [AuditoriaController::class, 'usuario'])->name('auditorias.usuarios.show');
+    Route::get('reportes', [ReporteController::class, 'index'])->name('reportes.index');
+    Route::get('reportes/operativo', [ReporteController::class, 'operativo'])->name('reportes.operativo');
+    Route::get('reportes/completo', [ReporteController::class, 'completo'])->name('reportes.completo');
+    Route::get('reportes/usuario', [ReporteController::class, 'usuario'])->name('reportes.usuario');
 });
