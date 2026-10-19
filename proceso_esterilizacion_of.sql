@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-10-2026 a las 19:18:17
+-- Tiempo de generación: 19-10-2026 a las 19:26:48
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.1.17
 
@@ -51,8 +51,8 @@ CREATE TABLE `proceso_esterilizacion` (
 --
 
 INSERT INTO `proceso_esterilizacion` (`id`, `servicio_id`, `fecha`, `turno`, `hora`, `recibe_id`, `entrega_id`, `material_id`, `cantidad_piezas`, `tipo_lavado`, `equipo_biomedico`, `operador_id`, `creado_por_id`, `estado_actual`, `creado_en`, `actualizado_en`) VALUES
-(1, 1, '2026-10-16', 'DIURNO', '19:35:00', 2, 3, 12, 16, 'ULTRASONICA', NULL, 3, 10, 'ROJA', '2026-10-16 00:35:59', '2026-10-16 00:35:59'),
-(3, 1, '2026-10-18', 'DIURNO', '09:00:00', 2, 1, 12, 16, 'ULTRASONICA', NULL, 3, 10, 'AZUL', '2026-10-18 14:00:51', '2026-10-18 14:00:51');
+(1, 1, '2026-10-16', 'DIURNO', '19:35:00', 2, 3, 12, 16, 'ULTRASONICA', 'LAVADOR_ULTRASONICO', 3, 10, 'ROJA', '2026-10-16 00:35:59', '2026-10-16 00:35:59'),
+(3, 1, '2026-10-18', 'DIURNO', '09:00:00', 2, 1, 12, 16, 'ULTRASONICA', 'BIDESTILADOR', 3, 10, 'AZUL', '2026-10-18 14:00:51', '2026-10-18 14:00:51');
 
 --
 -- Índices para tablas volcadas
