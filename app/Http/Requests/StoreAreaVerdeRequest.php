@@ -12,6 +12,15 @@ class StoreAreaVerdeRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation(): void
+    {
+        if (is_string($this->input('observacion'))) {
+            $this->merge([
+                'observacion' => mb_strtoupper(trim($this->input('observacion'))),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [

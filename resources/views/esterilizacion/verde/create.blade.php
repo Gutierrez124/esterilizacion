@@ -3,7 +3,12 @@
 @section('title', 'Registrar Area Verde')
 
 @section('content')
-<h1>Registrar Area Verde - Proceso #{{ $proceso->getKey() }}</h1>
+<div class="detail-actions">
+    <div class="title-with-back">
+        <a class="btn" href="{{ route('esterilizacion.procesos.show', $proceso) }}" title="Volver al proceso" aria-label="Volver al proceso"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></a>
+        <h1 class="no-margin">Registrar Area Verde - Proceso #{{ $proceso->getKey() }}</h1>
+    </div>
+</div>
 
 <section class="panel">
     <div class="section-title service">Proceso recibido desde Area Azul</div>
@@ -64,7 +69,7 @@
         <div class="grid two">
             <div>
                 <label for="observacion">Observacion final</label>
-                <textarea id="observacion" name="observacion" maxlength="1000">{{ old('observacion') }}</textarea>
+                <textarea id="observacion" name="observacion" maxlength="1000" class="upper">{{ old('observacion') }}</textarea>
             </div>
             <div class="form-actions">
                 <button class="btn green" type="submit">Guardar Area Verde</button>

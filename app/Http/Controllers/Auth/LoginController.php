@@ -40,11 +40,11 @@ class LoginController extends Controller
             ]);
         }
 
-        $ok = Auth::validate([
+        $ok = Auth::attempt([
             'email' => $credentials['email'],
             'password' => $credentials['password'],
             'activo' => 1,
-        ]);
+        ], $request->boolean('remember'));
 
         if (! $ok) {
             RateLimiter::hit($key);
@@ -55,12 +55,6 @@ class LoginController extends Controller
         }
 
         RateLimiter::clear($key);
-
-        Auth::attempt([
-            'email' => $credentials['email'],
-            'password' => $credentials['password'],
-            'activo' => 1,
-        ], $request->boolean('remember'));
 
         $request->session()->regenerate();
 

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Esterilizacion;
 use App\Http\Controllers\Controller;
 use App\Models\ProcesoEsterilizacion;
 use App\Models\Servicio;
+use App\Services\AuditoriaService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProcesoController extends Controller
 {
@@ -51,5 +53,34 @@ $proceso->load([
         ]);
 
         return view('esterilizacion.show', compact('proceso'));
+    }
+
+    public function destroy(ProcesoEsterilizacion $proceso, AuditoriaService $auditoria)
+    {
+        $identificador = $proceso->getKey();
+
+        DB::transaction(function () use ($proceso, $auditoria, $identificador) {
+            $proceso->areaVerde()->delete();
+            $proceso->areaAzul()->delete();
+            $proceso->delete();
+
+            $auditoria->registrar(
+                accion: 'PROCESO_ELIMINADO',
+                area: 'ROJA',
+                descripcion: "Proceso #{$identificador} eliminado del sistema.",
+                entidad: 'proceso_esterilizacion',
+                entidadId: $identificador,
+                datos: [
+                    'servicio_id' => $proceso->servicio_id,
+                    'material_id' => $proceso->material_id,
+                    'estado_final' => $proceso->estado_actual,
+                    'cantidad_piezas' => $proceso->cantidad_piezas,
+                ],
+            );
+        });
+
+        return redirect()
+            ->route('esterilizacion.procesos.index')
+            ->with('success', "Proceso #{$identificador} eliminado correctamente.");
     }
 }

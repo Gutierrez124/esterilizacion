@@ -8,6 +8,9 @@
 </head>
 <body>
 <div class="card">
+    <div class="logo">
+        <img src="{{ asset('logos/BellaVistaLogin.jpeg') }}" alt="Hospital Bella Vista">
+    </div>
     <h1>Control de esterilizacion</h1>
     <p class="sub">Acceso para personal del hospital</p>
 

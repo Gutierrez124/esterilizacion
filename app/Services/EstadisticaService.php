@@ -52,6 +52,7 @@ class EstadisticaService
     private function operacionesBase(array $f): Builder
     {
         return Auditoria::query()
+            ->whereNotIn('auditorias.accion', AuditoriaService::ACCIONES_AUTENTICACION)
             ->when($this->texto($f, 'fecha_desde'), fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
             ->when($this->texto($f, 'fecha_hasta'), fn ($q, $v) => $q->whereDate('created_at', '<=', $v))
             ->when($this->texto($f, 'area'), fn ($q, $v) => $q->where('area', $v))

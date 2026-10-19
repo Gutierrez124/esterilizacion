@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class AuditoriaService
 {
+    public const AREA_AUTENTICACION = 'AUTENTICACION';
+
+    public const ACCIONES_AUTENTICACION = ['LOGIN_EXITOSO', 'LOGIN_FALLIDO', 'LOGOUT'];
 
     public function registrar(
         string $accion,

@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Esterilizacion\AuditoriaController;
 use App\Http\Controllers\Esterilizacion\AreaAzulController;
 use App\Http\Controllers\Esterilizacion\AreaRojaController;
 use App\Http\Controllers\Esterilizacion\AreaVerdeController;
 use App\Http\Controllers\Esterilizacion\InstrumentalController;
+use App\Http\Controllers\Esterilizacion\PerfilController;
 use App\Http\Controllers\Esterilizacion\ProcesoController;
 use App\Http\Controllers\Esterilizacion\ReporteController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +24,7 @@ Route::post('logout', [LoginController::class, 'destroy'])
 Route::middleware('auth')->prefix('esterilizacion')->name('esterilizacion.')->group(function () {
     Route::get('procesos', [ProcesoController::class, 'index'])->name('procesos.index');
     Route::get('procesos/{proceso}', [ProcesoController::class, 'show'])->name('procesos.show');
+    Route::delete('procesos/{proceso}', [ProcesoController::class, 'destroy'])->name('procesos.destroy');
 
     Route::get('area-roja/crear', [AreaRojaController::class, 'create'])->name('roja.create');
     Route::post('area-roja', [AreaRojaController::class, 'store'])->name('roja.store');
@@ -50,4 +53,9 @@ Route::middleware('auth')->prefix('esterilizacion')->name('esterilizacion.')->gr
     Route::get('reportes/operativo', [ReporteController::class, 'operativo'])->name('reportes.operativo');
     Route::get('reportes/completo', [ReporteController::class, 'completo'])->name('reportes.completo');
     Route::get('reportes/usuario', [ReporteController::class, 'usuario'])->name('reportes.usuario');
+
+    Route::get('perfil', [PerfilController::class, 'show'])->name('perfil.show');
+
+    Route::get('auditorias', [AuditoriaController::class, 'index'])->name('auditorias.index');
+    Route::get('auditorias/excel', [AuditoriaController::class, 'excel'])->name('auditorias.excel');
 });

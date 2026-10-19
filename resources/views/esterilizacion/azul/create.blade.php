@@ -3,7 +3,12 @@
 @section('title', 'Registrar Area Azul')
 
 @section('content')
-<h1>Registrar Area Azul - Proceso #{{ $proceso->getKey() }}</h1>
+<div class="detail-actions">
+    <div class="title-with-back">
+        <a class="btn" href="{{ route('esterilizacion.procesos.show', $proceso) }}" title="Volver al proceso" aria-label="Volver al proceso"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></a>
+        <h1 class="no-margin">Registrar Area Azul - Proceso #{{ $proceso->getKey() }}</h1>
+    </div>
+</div>
 
 <section class="panel">
     <div class="summary">
@@ -41,7 +46,7 @@
         </div>
         <div>
             <label for="numero_carga">Numero de carga</label>
-            <input id="numero_carga" name="numero_carga" value="{{ old('numero_carga') }}" maxlength="50" required>
+            <input id="numero_carga" name="numero_carga" value="{{ old('numero_carga') }}" maxlength="50" class="upper" required>
         </div>
         <div>
             <label for="ib">IB</label>

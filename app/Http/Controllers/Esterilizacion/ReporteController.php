@@ -8,6 +8,7 @@ use App\Http\Requests\ReporteUsuarioRequest;
 use App\Models\Auditoria;
 use App\Models\ProcesoEsterilizacion;
 use App\Models\Usuario;
+use App\Services\AuditoriaService;
 use App\Services\EstadisticaService;
 use App\Support\XlsxWriter;
 use Illuminate\Support\Str;
@@ -205,6 +206,7 @@ class ReporteController extends Controller
         return [
             'PROCESO_CREADO',
             'PROCESO_ACTUALIZADO',
+            'PROCESO_ELIMINADO',
             'MATERIAL_RECIBIDO',
             'MATERIAL_ENTREGADO',
             'AREA_AZUL_COMPLETADA',
@@ -224,10 +226,9 @@ class ReporteController extends Controller
         $usuario = Usuario::query()->findOrFail($request->integer('usuario_id'));
         $rango = $request->rango();
 
-        // Incluye eventos donde el usuario registro la accion (usuario_id) o fue la
-        // persona designada para la accion (responsable_id), p. ej. quien entrega/recibe material.
-        $registros = Auditoria::query()
+       $registros = Auditoria::query()
             ->with(['proceso.servicio', 'proceso.material'])
+            ->whereNotIn('accion', AuditoriaService::ACCIONES_AUTENTICACION)
             ->where(function ($consulta) use ($usuario) {
                 $consulta
                     ->where('usuario_id', $usuario->getKey())

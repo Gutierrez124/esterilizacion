@@ -4,9 +4,12 @@
 
 @section('content')
 <h1>{{ $conjunto->nombre }}</h1>
-<p class="muted">Servicio: {{ $conjunto->servicio?->nombre ?? 'Sin servicio' }} · Estado:
-    <span class="badge {{ $conjunto->activo ? 'VERDE' : 'SISTEMA' }}">{{ $conjunto->activo ? 'Activo' : 'Inactivo' }}</span>
-</p>
+<div class="title-meta-row">
+    <p class="muted no-margin">Servicio: {{ $conjunto->servicio?->nombre ?? 'Sin servicio' }} · Estado:
+        <span class="badge {{ $conjunto->activo ? 'VERDE' : 'SISTEMA' }}">{{ $conjunto->activo ? 'Activo' : 'Inactivo' }}</span>
+    </p>
+    <a href="{{ route('esterilizacion.instrumental.index') }}" class="btn" title="Volver a conjuntos" aria-label="Volver a conjuntos"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></a>
+</div>
 
 <section class="panel">
     <h2>Editar conjunto</h2>
@@ -93,10 +96,10 @@
                     <td>{{ $instrumento->nombre }} @if(!$instrumento->activo)<span class="badge SISTEMA">Inactivo</span>@endif</td>
                     <td>{{ $instrumento->codigo ?? '—' }}</td>
                     <td>
-                        <form method="POST" action="{{ route('esterilizacion.instrumental.quitar-pieza', [$conjunto, $instrumento]) }}" onsubmit="return confirm('Quitar esta pieza del conjunto? El instrumento seguira en el catalogo global.');" class="inline-form">
+                        <form method="POST" action="{{ route('esterilizacion.instrumental.quitar-pieza', [$conjunto, $instrumento]) }}" class="inline-form form-eliminar">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn sm red">Quitar del conjunto</button>
+                            <button type="submit" class="btn sm red" title="Quitar del conjunto" aria-label="Quitar del conjunto"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
                         </form>
                         <form method="POST" action="{{ route('esterilizacion.instrumentos.estado', $instrumento) }}" class="inline-form">
                             @csrf
@@ -113,6 +116,5 @@
     </table>
 </section>
 
-<a href="{{ route('esterilizacion.instrumental.index') }}" class="btn">Volver a conjuntos</a>
 @endsection
 

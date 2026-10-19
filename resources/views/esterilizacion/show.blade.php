@@ -23,12 +23,17 @@
 <h1>Proceso #{{ $proceso->getKey() }}</h1>
 
 <div class="detail-actions">
-    <a class="btn" href="{{ route('esterilizacion.procesos.index') }}">Volver al listado</a>
+    <a class="btn" href="{{ route('esterilizacion.procesos.index') }}" title="Volver al listado" aria-label="Volver al listado"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></a>
     @if($proceso->estado_actual === 'ROJA')
         <a class="btn blue" href="{{ route('esterilizacion.azul.create', $proceso) }}">Registrar Area Azul</a>
     @elseif($proceso->estado_actual === 'AZUL')
         <a class="btn green" href="{{ route('esterilizacion.verde.create', $proceso) }}">Registrar Area Verde</a>
     @endif
+    <form method="POST" action="{{ route('esterilizacion.procesos.destroy', $proceso) }}" class="form-eliminar">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn red" title="Eliminar proceso" aria-label="Eliminar proceso"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
+    </form>
 </div>
 
 <section class="panel">
