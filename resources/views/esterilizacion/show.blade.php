@@ -58,7 +58,7 @@
         <div><span>Material/Instrumental</span>{{ $material }}</div>
         <div><span>Cantidad de piezas</span>{{ $proceso->cantidad_piezas }}</div>
         <div><span>Tipo de lavado</span>{{ $proceso->tipo_lavado }}</div>
-        <div><span>Equipo biomedico a usar</span>{{ $proceso->equipo_biomedico }}</div>
+        <div><span>Equipo biomedico a usar</span>{{ $proceso->equipo_biomedico_label ?: 'Pendiente' }}</div>
         <div><span>OP</span>{{ $usuario($proceso->operador) }}</div>
     </div>
 </section>
@@ -99,6 +99,7 @@
             <div><span>Tipo de carga</span>{{ $proceso->areaAzul->tipo_carga }}</div>
             <div><span>Nro. de carga</span>{{ $proceso->areaAzul->numero_carga ?: 'Pendiente' }}</div>
             <div><span>IB</span>{{ $proceso->areaAzul->ib ?: 'Pendiente' }}</div>
+            <div><span>Equipo biomedico</span>{{ $proceso->areaAzul->equipo_biomedico_label ?: 'Pendiente' }}</div>
             <div><span>OP</span>{{ $usuario($proceso->areaAzul->operador) }}</div>
         </div>
     @else

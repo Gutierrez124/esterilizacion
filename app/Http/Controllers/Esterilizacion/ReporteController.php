@@ -81,7 +81,7 @@ class ReporteController extends Controller
             'grupos' => [
                 ['titulo' => 'PROCESO', 'columnas' => 3, 'estilo' => 'proceso'],
                 ['titulo' => 'ÁREA ROJA', 'columnas' => 10, 'estilo' => 'roja'],
-                ['titulo' => 'ÁREA AZUL', 'columnas' => 6, 'estilo' => 'azul'],
+                ['titulo' => 'ÁREA AZUL', 'columnas' => 7, 'estilo' => 'azul'],
                 ['titulo' => 'ÁREA VERDE', 'columnas' => 6, 'estilo' => 'verde'],
                 ['titulo' => 'OBSERVACIÓN', 'columnas' => 1, 'estilo' => 'observacion'],
             ],
@@ -105,6 +105,7 @@ class ReporteController extends Controller
                 'Tipo de carga',
                 'Nro. de carga',
                 'IB',
+                'Equipo biomédico',
                 'OP',
                 'Entrega',
                 'Descarga',
@@ -113,7 +114,7 @@ class ReporteController extends Controller
                 'Recibe',
                 'Observacion',
             ],
-            'anchos' => [8, 24, 10, 12, 12, 8, 24, 24, 28, 12, 24, 16, 24, 24, 8, 18, 16, 12, 16, 24, 24, 24, 12, 8, 24, 45],
+            'anchos' => [8, 24, 10, 12, 12, 8, 24, 24, 28, 12, 24, 16, 24, 24, 8, 18, 16, 12, 16, 24, 24, 24, 24, 12, 8, 24, 45],
             'filas' => $procesos->map(fn (ProcesoEsterilizacion $proceso) => $this->filaOperativa($proceso))->all(),
         ];
 
@@ -301,7 +302,7 @@ class ReporteController extends Controller
             $proceso->material?->nombre ?? '',
             ['v' => (int) $proceso->cantidad_piezas, 's' => 11],
             ['v' => (string) $proceso->tipo_lavado, 's' => 11],
-            ['v' => (string) $proceso->equipo_biomedico, 's' => 11],
+            ['v' => $proceso->equipo_biomedico_label ?: $pendiente, 's' => 11],
             $proceso->operador?->nombre_completo ?? '',
 
             $azul?->operador?->nombre_completo ?? $pendiente,
@@ -310,6 +311,7 @@ class ReporteController extends Controller
             $azul?->tipo_carga ?? $pendiente,
             ['v' => $azul?->numero_carga ?? $pendiente, 's' => 11],
             ['v' => $azul?->ib ?? $pendiente, 's' => 11],
+            ['v' => $azul?->equipo_biomedico_label ?: $pendiente, 's' => 11],
 
             $verde ? ($proceso->operador?->nombre_completo ?? $pendiente) : $pendiente,
             $verde?->personaEntrega?->nombre_completo ?? $pendiente,

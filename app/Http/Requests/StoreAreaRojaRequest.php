@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ProcesoEsterilizacion;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -32,7 +33,7 @@ class StoreAreaRojaRequest extends FormRequest
                 ),
             ],
             'tipo_lavado' => ['required', Rule::in(['ULTRASONICA', 'MANUAL', 'LAVADORA_DESCONTAMINADORA', 'NO_CORRESPONDE'])],
-            'equipo_biomedico' => ['required', Rule::in(['AUTOCLAVE'])],
+            'equipo_biomedico' => ['required', Rule::in(array_keys(ProcesoEsterilizacion::EQUIPOS_BIOMEDICOS_ROJA))],
             'operador_id' => ['required', 'integer', Rule::exists('usuarios', 'id')->where(fn ($q) => $q->where('activo', 1))],
 
             'piezas' => ['required', 'array', 'min:1'],
@@ -53,6 +54,7 @@ class StoreAreaRojaRequest extends FormRequest
             'persona_recibe_id.exists' => 'La persona que recibe debe ser un usuario activo del sistema.',
             'persona_entrega_id.exists' => 'La persona que entrega debe ser un usuario activo del sistema.',
             'operador_id.exists' => 'El operador debe ser un usuario activo del sistema.',
+            'equipo_biomedico.in' => 'El equipo biomedico debe ser uno de los equipos habilitados para el Area Roja.',
             'piezas.required' => 'Debes confirmar las piezas del conjunto.',
             'piezas.*.instrumento_id.exists' => 'Una de las piezas no pertenece al conjunto seleccionado.',
             'piezas.*.cantidad_real.min' => 'Las cantidades no pueden ser negativas.',

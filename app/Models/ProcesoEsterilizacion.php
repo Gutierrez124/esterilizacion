@@ -10,6 +10,13 @@ class ProcesoEsterilizacion extends Model
     public const ESTADO_AZUL = 'AZUL';
     public const ESTADO_VERDE = 'VERDE';
 
+    public const EQUIPOS_BIOMEDICOS_ROJA = [
+        'LAVADOR_ULTRASONICO' => 'Lavador ultrasónico',
+        'BIDESTILADOR' => 'Bidestilador',
+        'LAVADORA_TERMODESINFECTADORA' => 'Lavadora termodesinfectadora',
+        'PISTOLA_AIRE_COMPRIMIDO' => 'Pistola de aire comprimido',
+    ];
+
     protected $table = 'proceso_esterilizacion';
 
     protected $guarded = [];
@@ -19,6 +26,11 @@ class ProcesoEsterilizacion extends Model
     protected $casts = [
         'fecha' => 'date',
     ];
+
+    public function getEquipoBiomedicoLabelAttribute(): string
+    {
+        return self::EQUIPOS_BIOMEDICOS_ROJA[$this->equipo_biomedico] ?? (string) $this->equipo_biomedico;
+    }
 
     public function servicio()
     {
