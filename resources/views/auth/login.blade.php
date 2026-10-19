@@ -11,7 +11,7 @@
     <div class="logo">
         <img src="{{ asset('logos/BellaVistaLogin.jpeg') }}" alt="Hospital Bella Vista">
     </div>
-    <h1>Control de esterilizacion</h1>
+    <h1>Trazabilidad - Central de Esterilización</h1>
     <p class="sub">Acceso para personal del hospital</p>
 
     @if(session('status'))
