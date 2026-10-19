@@ -58,10 +58,10 @@
             </select>
         </div>
         <div>
-            <label for="equipo_biomedico">Equipo biomedico</label>
+            <label for="equipo_biomedico">Equipo biomédico</label>
             <select id="equipo_biomedico" name="equipo_biomedico" required>
                 <option value="">Seleccione</option>
-                @foreach(\App\Models\AreaAzul::EQUIPOS_BIOMEDICOS_AZUL as $valor => $etiqueta)
+                @foreach(\App\Models\AreaAzul::EQUIPOS_BIOMÉDICOS_AZUL as $valor => $etiqueta)
                     <option value="{{ $valor }}" @selected(old('equipo_biomedico') === $valor)>{{ $etiqueta }}</option>
                 @endforeach
             </select>

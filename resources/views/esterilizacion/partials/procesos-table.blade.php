@@ -14,7 +14,7 @@
                 <th class="col-material">Material</th>
                 <th class="col-quantity">Cantidad</th>
                 <th class="col-operator">Operador</th>
-                <th class="col-area">Area actual</th>
+                <th class="col-area">Área actual</th>
                 <th class="col-actions">Acciones</th>
             </tr>
         </thead>

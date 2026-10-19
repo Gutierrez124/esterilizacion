@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Esterilizacion hospitalaria')</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
+    <link rel="icon" type="image/png" sizes="128x128" href="{{ asset('logos/icono.png') }}?v={{ filemtime(public_path('logos/icono.png')) }}">
+    <link rel="apple-touch-icon" sizes="128x128" href="{{ asset('logos/icono.png') }}?v={{ filemtime(public_path('logos/icono.png')) }}">
+
 </head>
 <body>
 <div class="app">
     <aside class="sidenav" id="sidenav">
         <div class="brand">
             <img class="brand-logo" src="{{ asset('logos/BellaVistaSidenav.jpeg') }}" alt="Logo hospital">
-            <span>Control de esterilizacion<small>Gestion hospitalaria</small></span>
+            <span>Control de esterilización<small>Gestión hospitalaria</small></span>
         </div>
         @auth
             <div class="nav-user">{{ Auth::user()->nombre_completo }} ({{ Auth::user()->rol }})</div>
