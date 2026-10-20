@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-10-2026 a las 01:07:42
+-- Tiempo de generación: 20-10-2026 a las 05:38:34
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.1.17
 
@@ -47,7 +47,9 @@ CREATE TABLE `area_azul` (
 --
 
 INSERT INTO `area_azul` (`id`, `proceso_id`, `hora`, `empaque`, `tipo_carga`, `equipo_biomedico`, `numero_carga`, `ib`, `operador_id`, `registrado_por_id`, `creado_en`, `actualizado_en`) VALUES
-(1, 3, '10:29:00', 'PAPEL CREPADO', 'INSTRUMENTAL', 'PUPINEL', 3, 'NO VIRO', 3, 10, '2026-10-19 10:29:43', '2026-10-19 10:29:43');
+(1, 3, '10:29:00', 'PAPEL CREPADO', 'INSTRUMENTAL', 'PUPINEL', 3, 'NO VIRO', 3, 10, '2026-10-19 10:29:43', '2026-10-19 10:29:43'),
+(2, 4, '22:17:00', 'MANGA', 'INSTRUMENTAL', 'AUTOCLAVE_250_LTR', 3, 'NO VIRO', 27, 10, '2026-10-19 22:18:04', '2026-10-19 22:18:04'),
+(3, 5, '22:20:00', 'MANGA', 'INSTRUMENTAL', 'AUTOCLAVE_250_LTR', 2, 'SI VIRO', 27, 10, '2026-10-19 22:21:15', '2026-10-19 22:21:15');
 
 -- --------------------------------------------------------
 
@@ -111,7 +113,20 @@ INSERT INTO `auditorias` (`id`, `usuario_id`, `responsable_id`, `accion`, `entid
 (60, 10, NULL, 'AREA_AZUL_COMPLETADA', 'area_azul', 1, 3, 'AZUL', 'Area Azul registrada para el proceso #3.', NULL, '2026-10-19 15:29:43'),
 (65, 10, NULL, 'LOGOUT', NULL, NULL, NULL, 'AUTENTICACION', 'Cierre de sesion.', '{\"email\":\"admin@esterilizacion.test\"}', '2026-10-19 16:11:28'),
 (66, 10, NULL, 'LOGIN_EXITOSO', NULL, NULL, NULL, 'AUTENTICACION', 'Inicio de sesion exitoso.', '{\"email\":\"admin@esterilizacion.test\"}', '2026-10-19 16:11:32'),
-(67, 10, NULL, 'LOGIN_EXITOSO', NULL, NULL, NULL, 'AUTENTICACION', 'Inicio de sesion exitoso.', '{\"email\":\"admin@esterilizacion.test\"}', '2026-10-19 22:53:59');
+(67, 10, NULL, 'LOGIN_EXITOSO', NULL, NULL, NULL, 'AUTENTICACION', 'Inicio de sesion exitoso.', '{\"email\":\"admin@esterilizacion.test\"}', '2026-10-19 22:53:59'),
+(68, 10, NULL, 'LOGIN_EXITOSO', NULL, NULL, NULL, 'AUTENTICACION', 'Inicio de sesion exitoso.', '{\"email\":\"admin@esterilizacion.test\"}', '2026-10-20 02:10:01'),
+(69, 10, NULL, 'LOGOUT', NULL, NULL, NULL, 'AUTENTICACION', 'Cierre de sesion.', '{\"email\":\"admin@esterilizacion.test\"}', '2026-10-20 02:22:19'),
+(70, 10, NULL, 'LOGIN_EXITOSO', NULL, NULL, NULL, 'AUTENTICACION', 'Inicio de sesion exitoso.', '{\"email\":\"admin@esterilizacion.test\"}', '2026-10-20 02:39:32'),
+(71, 10, NULL, 'INSTRUMENTAL_ACTUALIZADO', 'materiales', 24, NULL, 'ROJA', 'Conjunto de instrumental actualizado: EQUIPO DE CIRUGÍA MENOR PEDIÁTRICO – EMERGENCIA.', NULL, '2026-10-20 03:08:32'),
+(72, 10, NULL, 'INSTRUMENTAL_ACTUALIZADO', 'materiales', 24, NULL, 'ROJA', 'Conjunto de instrumental actualizado: EQUIPO DE CIRUGÍA MENOR PEDIÁTRICO – EMERGENCIA.', NULL, '2026-10-20 03:08:37'),
+(73, 10, NULL, 'PROCESO_CREADO', 'proceso_esterilizacion', 4, 4, 'ROJA', 'Proceso #4 iniciado en Area Roja con 12 piezas.', '{\"material_id\":\"24\",\"total_piezas\":12}', '2026-10-20 03:09:35'),
+(74, 10, 28, 'MATERIAL_RECIBIDO', 'proceso_esterilizacion', 4, 4, 'ROJA', 'Material recibido para el proceso #4.', '{\"total_piezas\":12}', '2026-10-20 03:09:35'),
+(75, 10, 21, 'MATERIAL_ENTREGADO', 'proceso_esterilizacion', 4, 4, 'ROJA', 'Material entregado al proceso #4.', NULL, '2026-10-20 03:09:35'),
+(76, 10, NULL, 'PROCESO_CREADO', 'proceso_esterilizacion', 5, 5, 'ROJA', 'Proceso #5 iniciado en Area Roja con 12 piezas.', '{\"material_id\":\"24\",\"total_piezas\":12}', '2026-10-20 03:17:27'),
+(77, 10, 20, 'MATERIAL_RECIBIDO', 'proceso_esterilizacion', 5, 5, 'ROJA', 'Material recibido para el proceso #5.', '{\"total_piezas\":12}', '2026-10-20 03:17:27'),
+(78, 10, 5, 'MATERIAL_ENTREGADO', 'proceso_esterilizacion', 5, 5, 'ROJA', 'Material entregado al proceso #5.', NULL, '2026-10-20 03:17:27'),
+(79, 10, NULL, 'AREA_AZUL_COMPLETADA', 'area_azul', 2, 4, 'AZUL', 'Area Azul registrada para el proceso #4.', NULL, '2026-10-20 03:18:04'),
+(80, 10, NULL, 'AREA_AZUL_COMPLETADA', 'area_azul', 3, 5, 'AZUL', 'Area Azul registrada para el proceso #5.', NULL, '2026-10-20 03:21:15');
 
 -- --------------------------------------------------------
 
@@ -590,7 +605,7 @@ INSERT INTO `materiales` (`id`, `servicio_id`, `nombre`, `activo`, `creado_en`) 
 (21, NULL, 'SUTURA N° 01', 1, '2026-10-19 13:55:10'),
 (22, NULL, 'SUTURA N° 02', 1, '2026-10-19 13:55:10'),
 (23, NULL, 'SUTURA N° 03', 1, '2026-10-19 13:55:10'),
-(24, NULL, 'EQUIPO DE CIRUGÍA MENOR PEDIÁTRICO – EMERGENCIA', 1, '2026-10-19 13:55:10'),
+(24, 6, 'EQUIPO DE CIRUGÍA MENOR PEDIÁTRICO – EMERGENCIA', 1, '2026-10-19 13:55:10'),
 (25, NULL, 'EQUIPO DE CIRUGÍA MENOR I – EMERGENCIA', 1, '2026-10-19 13:55:10'),
 (26, NULL, 'EQUIPO DE CIRUGÍA MENOR II – EMERGENCIA', 1, '2026-10-19 13:55:10'),
 (27, NULL, 'EQUIPO DE SUTURA N° 1 – HOJA 2', 1, '2026-10-19 14:07:54'),
@@ -1396,7 +1411,9 @@ CREATE TABLE `proceso_esterilizacion` (
 
 INSERT INTO `proceso_esterilizacion` (`id`, `servicio_id`, `fecha`, `turno`, `hora`, `recibe_id`, `entrega_id`, `material_id`, `cantidad_piezas`, `tipo_lavado`, `equipo_biomedico`, `operador_id`, `creado_por_id`, `estado_actual`, `creado_en`, `actualizado_en`) VALUES
 (1, 1, '2026-10-16', 'DIURNO', '19:35:00', 2, 3, 12, 16, 'ULTRASONICA', 'LAVADOR_ULTRASONICO', 3, 10, 'ROJA', '2026-10-16 00:35:59', '2026-10-16 00:35:59'),
-(3, 1, '2026-10-18', 'DIURNO', '09:00:00', 2, 1, 12, 16, 'ULTRASONICA', 'BIDESTILADOR', 3, 10, 'AZUL', '2026-10-18 14:00:51', '2026-10-18 14:00:51');
+(3, 1, '2026-10-18', 'DIURNO', '09:00:00', 2, 1, 12, 16, 'ULTRASONICA', 'BIDESTILADOR', 3, 10, 'AZUL', '2026-10-18 14:00:51', '2026-10-18 14:00:51'),
+(4, 6, '2026-10-20', 'DIURNO', '22:09:00', 28, 21, 24, 12, 'ULTRASONICA', 'LAVADORA_TERMODESINFECTADORA', 21, 10, 'AZUL', '2026-10-20 03:09:35', '2026-10-20 03:09:35'),
+(5, 6, '2026-10-20', 'DIURNO', '22:16:00', 20, 5, 24, 12, 'ULTRASONICA', 'BIDESTILADOR', 27, 10, 'AZUL', '2026-10-20 03:17:27', '2026-10-20 03:17:27');
 
 -- --------------------------------------------------------
 
@@ -1446,7 +1463,29 @@ INSERT INTO `proceso_instrumentos` (`id`, `proceso_id`, `instrumento_id`, `nombr
 (37, 3, 12, 'Separador de Farabeuf', '17-0600', 2, 2, NULL, NULL),
 (38, 3, 8, 'Sonda Acanalada', '19-0322', 1, 1, NULL, NULL),
 (39, 3, 7, 'Tijera Mayo Recta', '11-170-14-07', 1, 1, NULL, NULL),
-(40, 3, 6, 'Tijera Metzembaum Curva', '13-0601', 1, 1, NULL, NULL);
+(40, 3, 6, 'Tijera Metzembaum Curva', '13-0601', 1, 1, NULL, NULL),
+(41, 4, 21, 'Cubeta', NULL, 1, 1, NULL, NULL),
+(42, 4, 59, 'DISECCIÓN C/U', NULL, 1, 1, NULL, NULL),
+(43, 4, 65, 'DISECCIÓN S/U', '12-100-14-07', 1, 1, NULL, NULL),
+(44, 4, 54, 'Kelly Curva', '13-331-14-07', 1, 1, NULL, NULL),
+(45, 4, 76, 'Mango de bisturí N° 03', NULL, 1, 1, NULL, NULL),
+(46, 4, 44, 'Pinza Crille', 'KIP', 1, 1, NULL, NULL),
+(47, 4, 73, 'Porta grande', 'AE – 100/20', 1, 1, NULL, NULL),
+(48, 4, 74, 'Separador Farabeuf pediátrico', '15-663-00-07', 2, 2, NULL, NULL),
+(49, 4, 75, 'Sonda acanalada', '16-160-14-01', 1, 1, NULL, NULL),
+(50, 4, 27, 'Tijera mayo curva', '11-171-17-07', 1, 1, NULL, NULL),
+(51, 4, 77, 'Tijera metzembaum pequeña', '11-255-14-07', 1, 1, NULL, NULL),
+(52, 5, 21, 'Cubeta', NULL, 1, 1, NULL, NULL),
+(53, 5, 59, 'DISECCIÓN C/U', NULL, 1, 1, NULL, NULL),
+(54, 5, 65, 'DISECCIÓN S/U', '12-100-14-07', 1, 1, NULL, NULL),
+(55, 5, 54, 'Kelly Curva', '13-331-14-07', 1, 1, NULL, NULL),
+(56, 5, 76, 'Mango de bisturí N° 03', NULL, 1, 1, NULL, NULL),
+(57, 5, 44, 'Pinza Crille', 'KIP', 1, 1, NULL, NULL),
+(58, 5, 73, 'Porta grande', 'AE – 100/20', 1, 1, NULL, NULL),
+(59, 5, 74, 'Separador Farabeuf pediátrico', '15-663-00-07', 2, 2, NULL, NULL),
+(60, 5, 75, 'Sonda acanalada', '16-160-14-01', 1, 1, NULL, NULL),
+(61, 5, 27, 'Tijera mayo curva', '11-171-17-07', 1, 1, NULL, NULL),
+(62, 5, 77, 'Tijera metzembaum pequeña', '11-255-14-07', 1, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1527,7 +1566,7 @@ INSERT INTO `usuarios` (`id`, `nombres`, `apellidos`, `codigo`, `email`, `passwo
 (3, 'MARIA', 'RODRIGUEZ', NULL, NULL, NULL, NULL, 'OPERADOR', NULL, 1, '2026-10-11 14:26:57'),
 (4, 'CARLOS', 'MENDOZA', NULL, NULL, NULL, NULL, 'OPERADOR', NULL, 1, '2026-10-11 14:26:57'),
 (5, 'ANA', 'TORRES', NULL, NULL, NULL, NULL, 'OPERADOR', NULL, 1, '2026-10-11 14:26:57'),
-(10, 'ADMINISTRADOR', 'DEL SISTEMA', NULL, 'admin@esterilizacion.test', '$2y$12$24fptiNQmwChyTxZynYIMeyIvqZhreJCmtYvKwuYW7N58DRjCHXRK', 'iF7IbFuvGzBXejgqHQP3VFzTLHmb9QR9DgzAEXThNCwTr3kR3Eorxx0q48sc', 'ADMIN', NULL, 1, '2026-10-14 11:36:55'),
+(10, 'ADMINISTRADOR', 'DEL SISTEMA', NULL, 'admin@esterilizacion.test', '$2y$12$24fptiNQmwChyTxZynYIMeyIvqZhreJCmtYvKwuYW7N58DRjCHXRK', 'ku81lAYrB5qhmNq3DcZo1o7joA0HQdVzkIg5sh1FkApE4eGghLB3A6JdEjId', 'ADMIN', NULL, 1, '2026-10-14 11:36:55'),
 (20, 'ANITA', 'RAMÍREZ QUISPE', '45508503', NULL, NULL, NULL, 'OPERADOR', NULL, 1, '2026-10-19 16:53:51'),
 (21, 'DIOMEDES', 'CRUZADO CORRALES', '00885520', NULL, NULL, NULL, 'OPERADOR', NULL, 1, '2026-10-19 16:53:51'),
 (22, 'JUANA', 'TORRES SÁNCHEZ', '27569282', NULL, NULL, NULL, 'OPERADOR', NULL, 1, '2026-10-19 16:53:51'),
@@ -2145,7 +2184,7 @@ ALTER TABLE `area_verde`
 -- AUTO_INCREMENT de la tabla `auditorias`
 --
 ALTER TABLE `auditorias`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT de la tabla `instrumentos`
@@ -2181,7 +2220,7 @@ ALTER TABLE `proceso_esterilizacion`
 -- AUTO_INCREMENT de la tabla `proceso_instrumentos`
 --
 ALTER TABLE `proceso_instrumentos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT de la tabla `servicios`
