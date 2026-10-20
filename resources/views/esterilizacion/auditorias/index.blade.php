@@ -6,14 +6,14 @@
 <div class="detail-actions">
     <div class="title-with-back">
         <a class="btn" href="{{ route('esterilizacion.perfil.show') }}" title="Volver a mi perfil" aria-label="Volver a mi perfil"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></a>
-        <h1 class="no-margin">Auditorias</h1>
+        <h1 class="no-margin">Auditorías</h1>
     </div>
     <a class="btn green" href="{{ route('esterilizacion.auditorias.excel', request()->query()) }}">Descargar Excel</a>
 </div>
 
 <p class="muted">
-    Historial personal: tus inicios y cierres de sesion y cada accion que realizaste.
-    Filtra por accion, area o fecha.
+    Historial personal: tus inicios y cierres de sesión y cada acción que realizaste.
+    Filtra por acción, área o fecha.
 </p>
 
 <section class="panel">
@@ -86,7 +86,7 @@
                     <td class="muted">{{ $detalle }}</td>
                 </tr>
             @empty
-                <tr><td colspan="8" class="muted">No hay auditorias registradas con los filtros seleccionados.</td></tr>
+                <tr><td colspan="8" class="muted">No hay auditorías registradas con los filtros seleccionados.</td></tr>
             @endforelse
         </tbody>
     </table>

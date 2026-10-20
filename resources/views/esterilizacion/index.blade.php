@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Procesos de esterilizacion')
+@section('title', 'Procesos de esterilización')
 
 @section('content')
     <div class="detail-actions"><h1 class="no-margin">Procesos de esterilización</h1><a class="btn primary" href="{{ route('esterilizacion.roja.create') }}">Nuevo proceso</a></div>

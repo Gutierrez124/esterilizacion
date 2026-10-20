@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class Usuario extends Authenticatable
 {
@@ -16,7 +17,9 @@ class Usuario extends Authenticatable
     protected $fillable = [
         'nombres',
         'apellidos',
+        'dni',
         'codigo',
+        'foto',
         'email',
         'password',
         'rol',
@@ -37,6 +40,11 @@ class Usuario extends Authenticatable
     {
         return trim(($this->nombres ?? '').' '.($this->apellidos ?? ''))
             ?: ($this->email ?? 'Usuario '.$this->getKey());
+    }
+
+    public function getUrlFotoAttribute(): ?string
+    {
+        return $this->foto ? Storage::url($this->foto) : null;
     }
 
     public function procesosCreados()

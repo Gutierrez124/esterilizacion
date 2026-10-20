@@ -55,6 +55,8 @@ Route::middleware('auth')->prefix('esterilizacion')->name('esterilizacion.')->gr
     Route::get('reportes/usuario', [ReporteController::class, 'usuario'])->name('reportes.usuario');
 
     Route::get('perfil', [PerfilController::class, 'show'])->name('perfil.show');
+    Route::put('perfil', [PerfilController::class, 'update'])->name('perfil.update');
+    Route::put('perfil/contrasena', [PerfilController::class, 'updatePassword'])->name('perfil.password');
 
     Route::get('auditorias', [AuditoriaController::class, 'index'])->name('auditorias.index');
     Route::get('auditorias/excel', [AuditoriaController::class, 'excel'])->name('auditorias.excel');

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    public const HOME = '/esterilizacion/procesos';
+    public const HOME = '/esterilizacion/perfil';
 
     public function boot(): void
     {
