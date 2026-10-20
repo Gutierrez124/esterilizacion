@@ -12,7 +12,7 @@
 <body>
 <div class="card">
     <div class="logo">
-        <img src="{{ asset('logos/BellaVistaLogin.jpeg') }}" alt="Hospital Bella Vista">
+        <img src="{{ asset('logos/BellaVistaLogin.png') }}" alt="Hospital Bella Vista">
     </div>
     <h1>Trazabilidad - Central de Esterilización</h1>
     <p class="sub">Acceso para personal del hospital</p>
@@ -34,18 +34,18 @@
 
     <form method="POST" action="{{ route('login.store') }}">
         @csrf
-        <label for="email">Correo electronico</label>
+        <label for="email">Correo electrónico</label>
         <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username">
 
-        <label for="password">Contrasena</label>
+        <label for="password">Contraseña</label>
         <input id="password" type="password" name="password" required autocomplete="current-password">
 
         <div class="remember">
             <input id="remember" type="checkbox" name="remember">
-            <label for="remember" class="checkbox-label">Recordarme</label>
+            <label for="remember" class="checkbox-label">Recordar</label>
         </div>
 
-        <button type="submit">Iniciar sesion</button>
+        <button type="submit">Iniciar sesión</button>
     </form>
 </div>
 </body>

@@ -13,7 +13,7 @@
 <div class="app">
     <aside class="sidenav" id="sidenav">
         <div class="brand">
-            <img class="brand-logo" src="{{ asset('logos/BellaVistaSidenav.jpeg') }}" alt="Logo hospital">
+            <img class="brand-logo" src="{{ asset('logos/BellaVistaSidenav.png') }}" alt="Logo hospital">
             <span>Control de esterilización<small>Gestión hospitalaria</small></span>
         </div>
         @auth
@@ -46,12 +46,6 @@
             <div class="topbar-title">@yield('title', 'Esterilizacion hospitalaria')</div>
         </header>
         <main>
-            @if(session('success'))
-                <div class="alert success">{{ session('success') }}</div>
-            @endif
-            @if(session('status'))
-                <div class="alert success">{{ session('status') }}</div>
-            @endif
             @if($errors->any())
                 <div class="alert error">
                     <strong>Revisa la informacion ingresada.</strong>
@@ -80,6 +74,27 @@
             <button type="button" class="btn red" id="modalEliminarAceptar" disabled>Aceptar</button>
         </div>
     </div>
+</div>
+{{-- Toast inferior de notificaciones: verde=exito, amarillo=warning/faltan campos, rojo=error --}}
+@php
+    $toastTipo = null;
+    $toastMensaje = null;
+    if (session('success')) { $toastTipo = 'success'; $toastMensaje = session('success'); }
+    elseif (session('status')) { $toastTipo = 'success'; $toastMensaje = session('status'); }
+    elseif (session('warning')) { $toastTipo = 'warning'; $toastMensaje = session('warning'); }
+    elseif (session('error')) { $toastTipo = 'error'; $toastMensaje = session('error'); }
+    $toastIconos = [
+        'success' => '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>',
+        'warning' => '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="7" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
+        'error' => '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>',
+    ];
+@endphp
+<div id="toastArea" class="toast-wrap" aria-live="polite">
+    @if($toastMensaje)
+        <div class="toast {{ $toastTipo }}" data-toast role="status">
+            <span class="toast-ico">{!! $toastIconos[$toastTipo] !!}</span><span>{{ $toastMensaje }}</span>
+        </div>
+    @endif
 </div>
 @stack('scripts')
 <script>
@@ -159,6 +174,36 @@
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && modalEliminar && modalEliminar.classList.contains('is-open')) cerrarModalEliminar();
+    });
+
+    // ===== Toasts de notificacion (parte inferior): success / warning / error =====
+    const toastIconosJs = {
+        success: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>',
+        warning: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="7" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
+        error: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'
+    };
+    function ocultarToast(toast) {
+        if (!toast) return;
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 320);
+    }
+    function mostrarToast(mensaje, tipo) {
+        const area = document.getElementById('toastArea');
+        if (!area) return;
+        tipo = String(tipo || 'success').toLowerCase();
+        if (!toastIconosJs[tipo]) tipo = 'success';
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + tipo;
+        toast.setAttribute('role', 'status');
+        toast.innerHTML = '<span class="toast-ico">' + toastIconosJs[tipo] + '</span><span></span>';
+        toast.querySelector('span:last-child').textContent = mensaje;
+        area.appendChild(toast);
+        setTimeout(() => ocultarToast(toast), 4200);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('#toastArea .toast[data-toast]').forEach(function (toast) {
+            setTimeout(() => ocultarToast(toast), 4200);
+        });
     });
 </script>
 </body>

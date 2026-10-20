@@ -79,7 +79,7 @@
             <label for="equipo_biomedico">Equipo biomédico</label>
             <select id="equipo_biomedico" name="equipo_biomedico" required>
                 <option value="">Seleccione</option>
-                @foreach(\App\Models\ProcesoEsterilizacion::EQUIPOS_BIOMÉDICOS_ROJA as $valor => $etiqueta)
+                @foreach(\App\Models\ProcesoEsterilizacion::EQUIPOS_BIOMEDICOS_ROJA as $valor => $etiqueta)
                     <option value="{{ $valor }}" @selected(old('equipo_biomedico') === $valor)>{{ $etiqueta }}</option>
                 @endforeach
             </select>
@@ -241,7 +241,7 @@ if (servicio.value) cargarMateriales();
 document.getElementById('formRoja').addEventListener('submit', function (e) {
     if (!piezasActuales.length) {
         e.preventDefault();
-        alert('Debes abrir y confirmar las piezas del conjunto antes de guardar.');
+        mostrarToast('Debes abrir y confirmar las piezas del conjunto antes de guardar.', 'warning');
         return;
     }
     this.querySelectorAll('input[name^="piezas"]').forEach(n => n.remove());

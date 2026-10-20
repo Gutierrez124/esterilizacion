@@ -12,9 +12,9 @@
                 <th class="col-shift">Turno</th>
                 <th class="col-service">Servicio</th>
                 <th class="col-material">Material</th>
-                <th class="col-quantity">Cantidad</th>
+                <th class="col-quantity" title="Cantidad">Cant.</th>
                 <th class="col-operator">Operador</th>
-                <th class="col-area">Área actual</th>
+                <th class="col-area" title="Área actual">Área</th>
                 <th class="col-actions">Acciones</th>
             </tr>
         </thead>
@@ -31,11 +31,11 @@
                     <td class="col-area"><span class="badge {{ $proceso->estado_actual }}">{{ $proceso->estado_actual }}</span></td>
                     <td class="col-actions">
                         <div class="actions process-actions">
-                            <a class="btn sm" href="{{ route('esterilizacion.procesos.show', $proceso) }}">Detalle</a>
+                            <a class="btn sm tooltip" href="{{ route('esterilizacion.procesos.show', $proceso) }}" data-tooltip="Detalles" aria-label="Detalles"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></a>
                             @if($proceso->estado_actual === 'ROJA')
-                                <a class="btn sm blue" href="{{ route('esterilizacion.azul.create', $proceso) }}">Registrar Azul</a>
+                                <a class="btn sm blue tooltip" href="{{ route('esterilizacion.azul.create', $proceso) }}" data-tooltip="Área Azul" aria-label="Registrar Área Azul">RA</a>
                             @elseif($proceso->estado_actual === 'AZUL')
-                                <a class="btn sm green" href="{{ route('esterilizacion.verde.create', $proceso) }}">Registrar Verde</a>
+                                <a class="btn sm green tooltip" href="{{ route('esterilizacion.verde.create', $proceso) }}" data-tooltip="Área Verde" aria-label="Registrar Área Verde">RV</a>
                             @endif
                             <form method="POST" action="{{ route('esterilizacion.procesos.destroy', $proceso) }}" class="form-eliminar">
                                 @csrf
