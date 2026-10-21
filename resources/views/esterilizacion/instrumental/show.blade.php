@@ -38,16 +38,16 @@
 </section>
 
 <section class="panel instrumental-panel instrumental-add">
-    <h2>AÃ±adir pieza al conjunto</h2>
+    <h2>Añadir pieza al conjunto</h2>
     <form method="POST" action="{{ route('esterilizacion.instrumental.agregar', $conjunto) }}" class="grid grid-2-2-1-auto">
         @csrf
         <div>
             <label for="nuevo_instrumento">Nuevo instrumento</label>
             <input id="nuevo_instrumento" type="text" name="nuevo_instrumento" value="{{ old('nuevo_instrumento') }}" placeholder="Nombre del instrumento" required>
-            <small class="muted">Si ya existe en el catÃ¡logo, escribe el mismo nombre y cÃ³digo para reutilizarlo. No se puede agregar dos veces al mismo material.</small>
+            <small class="muted">Si ya existe en el catálogo, escribe el mismo nombre y código para reutilizarlo. No se puede agregar dos veces al mismo material.</small>
         </div>
         <div>
-            <label for="nuevo_codigo">CÃ³digo (opcional)</label>
+            <label for="nuevo_codigo">Código (opcional)</label>
             <input id="nuevo_codigo" type="text" name="nuevo_codigo" value="{{ old('nuevo_codigo') }}" placeholder="Ej. 15-0121">
         </div>
         <div>
@@ -55,7 +55,7 @@
             <input id="cantidad_predeterminada" type="number" name="cantidad_predeterminada" min="1" step="1" value="1" required>
         </div>
         <div class="field-actions-end">
-            <button type="submit" class="btn primary">AÃ±adir</button>
+            <button type="submit" class="btn primary">Añadir</button>
         </div>
     </form>
 </section>
@@ -67,7 +67,7 @@
             <tr>
                 <th class="col-150">Cantidad</th>
                 <th>Instrumento</th>
-                <th>CÃ³digo</th>
+                <th>Código</th>
                 <th class="col-230">Acciones</th>
             </tr>
         </thead>
@@ -99,7 +99,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="4" class="muted">Este conjunto no tiene piezas. Anade la primera.</td></tr>
+                <tr><td colspan="4" class="muted">Este conjunto no tiene piezas. Añade la primera.</td></tr>
             @endforelse
         </tbody>
     </table>

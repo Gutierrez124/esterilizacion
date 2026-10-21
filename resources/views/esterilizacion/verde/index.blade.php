@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Pendientes Area Verde')
+@section('title', 'Pendientes del Área Verde')
 
 @section('content')
 <div class="detail-actions">
-    <h1 class="no-margin">Pendientes de Area Verde</h1>
+    <h1 class="no-margin">Pendientes del Área Verde</h1>
     <a class="btn primary" href="{{ route('esterilizacion.roja.create') }}">Nuevo proceso</a>
 </div>
 <section class="panel">

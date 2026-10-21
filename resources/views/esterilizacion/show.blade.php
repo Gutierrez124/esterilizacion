@@ -24,9 +24,9 @@
 <div class="detail-actions">
     <a class="btn" href="{{ route('esterilizacion.procesos.index') }}" title="Volver al listado" aria-label="Volver al listado"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></a>
     @if($proceso->estado_actual === 'ROJA')
-        <a class="btn blue" href="{{ route('esterilizacion.azul.create', $proceso) }}">Registrar Area Azul</a>
+        <a class="btn blue" href="{{ route('esterilizacion.azul.create', $proceso) }}">Registrar Área Azul</a>
     @elseif($proceso->estado_actual === 'AZUL')
-        <a class="btn primary" href="{{ route('esterilizacion.verde.create', $proceso) }}">Registrar Area Verde</a>
+        <a class="btn primary" href="{{ route('esterilizacion.verde.create', $proceso) }}">Registrar Área Verde</a>
     @endif
     <form method="POST" action="{{ route('esterilizacion.procesos.destroy', $proceso) }}" class="form-eliminar">
         @csrf
@@ -39,15 +39,15 @@
     <div class="section-title service">Servicio</div>
     <div class="summary">
         <div><span>Identificador</span>{{ $proceso->getKey() }}</div>
-        <div><span>Servicio</span>{{ $grupos->map(fn($g) => $g->first()?->servicio?->nombre ?? 'Servicio histÃ³rico')->unique()->implode(', ') ?: 'Sin servicio asociado' }}</div>
-        <div><span>Area actual</span><span class="badge {{ $proceso->estado_actual }}">{{ $proceso->estado_actual }}</span></div>
+        <div><span>Servicio</span>{{ $grupos->map(fn($g) => $g->first()?->servicio?->nombre ?? 'Servicio histórico')->unique()->implode(', ') ?: 'Sin servicio asociado' }}</div>
+        <div><span>Área actual</span><span class="badge {{ $proceso->estado_actual }}">{{ $proceso->estado_actual }}</span></div>
         <div><span>Registrado por</span>{{ $usuario($proceso->creadoPor) }}</div>
 
     </div>
 </section>
 
 <section class="panel">
-    <div class="section-title red">Area Roja</div>
+    <div class="section-title red">Área Roja</div>
     <div class="summary">
         <div><span>Fecha</span>{{ $fecha($proceso->fecha) }}</div>
         <div><span>Turno</span>{{ $proceso->turno }}</div>
@@ -67,7 +67,7 @@
         <details class="instrument-group">
             <summary>{{ $grupo->first()?->servicio?->nombre ?? 'Servicio historico' }} · {{ $grupo->first()?->material?->nombre ?? 'Material historico' }}</summary>
             <table>
-                <thead><tr><th>Instrumento</th><th>Codigo</th><th>Predeterminada</th><th>Real</th></tr></thead>
+                <thead><tr><th>Instrumento</th><th>Código</th><th>Predeterminada</th><th>Real</th></tr></thead>
                 <tbody>
                     @foreach($grupo as $pieza)
                         <tr><td>{{ $pieza->nombre_instrumento }}</td><td>{{ $pieza->codigo_instrumento ?? '—' }}</td><td>{{ $pieza->cantidad_predeterminada }}</td><td><strong>{{ $pieza->cantidad_real }}</strong></td></tr>
@@ -79,24 +79,24 @@
     @endforelse
 </section>
 <section class="panel">
-    <div class="section-title blue">Area Azul</div>
+    <div class="section-title blue">Área Azul</div>
     @if($proceso->areaAzul)
         <div class="summary">
             <div><span>Hora</span>{{ $hora($proceso->areaAzul->hora) }}</div>
             <div><span>Empaque</span>{{ $proceso->areaAzul->empaque ?: 'Pendiente' }}</div>
             <div><span>Tipo de carga</span>{{ $proceso->areaAzul->tipo_carga }}</div>
-            <div><span>Nro. de carga</span>{{ $proceso->areaAzul->numero_carga ?: 'Pendiente' }}</div>
+            <div><span>Número de carga</span>{{ $proceso->areaAzul->numero_carga ?: 'Pendiente' }}</div>
             <div><span>IB</span>{{ $proceso->areaAzul->ib ?: 'Pendiente' }}</div>
             <div><span>Equipo biomédico</span>{{ $proceso->areaAzul->equipo_biomedico_label ?: 'Pendiente' }}</div>
             <div><span>OP</span>{{ $usuario($proceso->areaAzul->operador) }}</div>
         </div>
     @else
-        <p class="muted">Area Azul pendiente de registro.</p>
+        <p class="muted">Área Azul pendiente de registro.</p>
     @endif
 </section>
 
 <section class="panel">
-    <div class="section-title green">Area Verde</div>
+    <div class="section-title green">Área Verde</div>
     @if($proceso->areaVerde)
         <div class="summary">
             <div><span>Entrega - fecha</span>{{ $fecha($proceso->areaVerde->fecha_entrega) }}</div>
@@ -106,14 +106,14 @@
             <div><span>Recibe</span>{{ $usuario($proceso->areaVerde->personaRecibe) }}</div>
         </div>
     @else
-        <p class="muted">Area Verde pendiente de registro.</p>
+        <p class="muted">Área Verde pendiente de registro.</p>
     @endif
 </section>
 
 <section class="panel">
-    <div class="section-title observation">Observacion</div>
+    <div class="section-title observation">Observación</div>
     <div class="summary">
-        <div><span>Observacion final</span>{{ $proceso->areaVerde?->observacion ?: 'Sin observacion registrada' }}</div>
+        <div><span>Observación final</span>{{ $proceso->areaVerde?->observacion ?: 'Sin observación registrada' }}</div>
     </div>
 </section>
 @endsection

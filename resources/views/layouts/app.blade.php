@@ -58,11 +58,11 @@
     </div>
 </div>
 
-{{-- Modal global de confirmacion de eliminacion: exige escribir la palabra ELIMINAR --}}
+{{-- Modal global de confirmación de eliminación: exige escribir la palabra ELIMINAR --}}
 <div id="modalEliminar" class="modal">
     <div class="panel modal-box modal-sm">
         <div class="modal-header">
-            <h2 class="no-margin">Confirmar eliminacion</h2>
+            <h2 class="no-margin">Confirmar eliminación</h2>
         </div>
         <p class="modal-intro">Para eliminar, escribe la palabra <strong>ELIMINAR</strong> y luego pulsa <strong>Aceptar</strong>.</p>
         <input id="modalEliminarPalabra" class="modal-eliminar-input" type="text" placeholder="Escribe ELIMINAR" autocomplete="off" spellcheck="false" aria-label="Palabra de confirmacion">
@@ -264,7 +264,7 @@
         });
     });
 
-    // ===== Modal global de eliminacion: hay que escribir ELIMINAR para confirmar =====
+    // ===== Modal global de eliminación: hay que escribir ELIMINAR para confirmar =====
     const modalEliminar = document.getElementById('modalEliminar');
     const palabraEliminar = document.getElementById('modalEliminarPalabra');
     const btnAceptarEliminar = document.getElementById('modalEliminarAceptar');
