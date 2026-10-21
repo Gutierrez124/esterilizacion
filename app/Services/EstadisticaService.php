@@ -17,12 +17,12 @@ class EstadisticaService
             'filas' => $registros->map(fn ($registro) => [
                 $registro->created_at?->format('d/m/Y H:i') ?? '',
                 $registro->usuario?->nombre_completo ?? 'Sistema',
-                $registro->responsable?->nombre_completo ?? '',
-                $registro->accion,
-                $registro->area,
+                $registro->responsable_nombre,
+                $registro->accion_etiqueta,
+                $registro->area_etiqueta,
                 $registro->proceso_id ? '#'.$registro->proceso_id : '',
-                $registro->proceso?->servicio?->nombre ?? '',
-                $registro->proceso?->material?->nombre ?? '',
+                $registro->proceso?->instrumentos?->pluck('servicio.nombre')->filter()->unique()->implode(', ') ?? '',
+                $registro->proceso?->instrumentos?->pluck('material.nombre')->filter()->unique()->implode(', ') ?? '',
                 $registro->descripcion,
             ])->all(),
         ];
@@ -38,7 +38,7 @@ class EstadisticaService
         return $this->operaciones($f)
             ->when($this->entero($f, 'usuario_id'), fn ($q, $v) => $q->where('auditorias.usuario_id', $v))
             ->when($this->entero($f, 'proceso_id'), fn ($q, $v) => $q->where('auditorias.proceso_id', $v))
-            ->with(['usuario', 'responsable', 'proceso.servicio', 'proceso.material'])
+            ->with(['usuario', 'responsable', 'proceso.instrumentos.servicio', 'proceso.instrumentos.material'])
             ->orderByDesc('created_at')
             ->orderByDesc('id');
     }
@@ -56,7 +56,7 @@ class EstadisticaService
             ->when($this->texto($f, 'fecha_desde'), fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
             ->when($this->texto($f, 'fecha_hasta'), fn ($q, $v) => $q->whereDate('created_at', '<=', $v))
             ->when($this->texto($f, 'area'), fn ($q, $v) => $q->where('area', $v))
-            ->when($this->entero($f, 'servicio_id'), fn ($q, $v) => $q->whereHas('proceso', fn ($p) => $p->where('servicio_id', $v)));
+            ->when($this->entero($f, 'servicio_id'), fn ($q, $v) => $q->whereHas('proceso.instrumentos', fn ($i) => $i->where('servicio_id', $v)));
     }
 
     private function texto(array $f, string $clave): string

@@ -14,10 +14,10 @@ class ProcesoController extends Controller
     public function index(Request $request)
     {
 $procesos = ProcesoEsterilizacion::query()
-            ->with(['servicio', 'material', 'personaRecibe', 'personaEntrega', 'operador', 'areaAzul.operador', 'areaVerde.personaEntrega', 'areaVerde.personaRecibe'])
+            ->with(['instrumentos.servicio', 'instrumentos.material', 'personaRecibe', 'personaEntrega', 'operador', 'areaAzul.operador', 'areaVerde.personaEntrega', 'areaVerde.personaRecibe'])
             ->when($request->filled('fecha_desde'), fn ($query) => $query->whereDate('fecha', '>=', $request->fecha_desde))
             ->when($request->filled('fecha_hasta'), fn ($query) => $query->whereDate('fecha', '<=', $request->fecha_hasta))
-            ->when($request->filled('servicio_id'), fn ($query) => $query->where('servicio_id', $request->servicio_id))
+            ->when($request->filled('servicio_id'), fn ($query) => $query->whereHas('instrumentos', fn ($i) => $i->where('servicio_id', $request->servicio_id)))
             ->when($request->filled('turno'), fn ($query) => $query->where('turno', $request->turno))
             ->when($request->filled('estado_actual'), fn ($query) => $query->where('estado_actual', $request->estado_actual))
             ->orderByDesc('fecha')
@@ -39,8 +39,6 @@ $procesos = ProcesoEsterilizacion::query()
     public function show(ProcesoEsterilizacion $proceso)
     {
 $proceso->load([
-            'servicio',
-            'material',
             'personaRecibe',
             'personaEntrega',
             'operador',
@@ -48,7 +46,8 @@ $proceso->load([
             'areaVerde.personaEntrega',
             'areaVerde.personaRecibe',
             'creadoPor',
-            'instrumentos',
+            'instrumentos.servicio',
+            'instrumentos.material',
 
         ]);
 
@@ -71,8 +70,6 @@ $proceso->load([
                 entidad: 'proceso_esterilizacion',
                 entidadId: $identificador,
                 datos: [
-                    'servicio_id' => $proceso->servicio_id,
-                    'material_id' => $proceso->material_id,
                     'estado_final' => $proceso->estado_actual,
                     'cantidad_piezas' => $proceso->cantidad_piezas,
                 ],

@@ -28,9 +28,6 @@
             <p class="welcome-greeting">Hola, <strong>{{ $usuario->nombres }}</strong> <span class="welcome-wave">&#128075;</span></p>
             <h1 class="welcome-title">Bienvenido al Sistema de trazabilidad de Central de Esterilización del Hospital IIE Bellavista SITCE</h1>
             <div class="profile-meta">
-                <span class="profile-chip">{{ $usuario->nombre_completo }}</span>
-                <span class="profile-chip">{{ $usuario->rol }}</span>
-                <span class="profile-chip {{ $usuario->activo ? 'is-ok' : 'is-off' }}">{{ $usuario->activo ? 'Cuenta activa' : 'Cuenta inactiva' }}</span>
                 @if($usuario->dni)
                     <span class="profile-chip">DNI: {{ $usuario->dni }}</span>
                 @endif
@@ -148,7 +145,7 @@
                         </div>
                     </div>
                     <div class="field-actions-end">
-                        <button type="submit" class="btn green">Cambiar contraseña</button>
+                        <button type="submit" class="btn primary">Cambiar contraseña</button>
                     </div>
                 </div>
             </form>

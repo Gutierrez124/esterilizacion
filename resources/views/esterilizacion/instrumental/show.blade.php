@@ -4,14 +4,11 @@
 
 @section('content')
 <h1>{{ $conjunto->nombre }}</h1>
-<div class="title-meta-row">
-    <p class="muted no-margin">Servicio: {{ $conjunto->servicio?->nombre ?? 'Sin servicio' }} · Estado:
-        <span class="badge {{ $conjunto->activo ? 'VERDE' : 'SISTEMA' }}">{{ $conjunto->activo ? 'Activo' : 'Inactivo' }}</span>
-    </p>
+<div class="title-meta-row instrumental-detail-header">
     <a href="{{ route('esterilizacion.instrumental.index') }}" class="btn" title="Volver a conjuntos" aria-label="Volver a conjuntos"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></a>
 </div>
 
-<section class="panel">
+<section class="panel instrumental-panel instrumental-edit">
     <h2>Editar conjunto</h2>
     <form method="POST" action="{{ route('esterilizacion.instrumental.update', $conjunto) }}" class="grid grid-1-1-auto">
         @csrf
@@ -36,29 +33,21 @@
         @csrf
         @method('PUT')
         <input type="hidden" name="activo" value="{{ $conjunto->activo ? 0 : 1 }}">
-        <button type="submit" class="btn {{ $conjunto->activo ? 'red' : 'green' }}">{{ $conjunto->activo ? 'Desactivar conjunto' : 'Activar conjunto' }}</button>
+        <button type="submit" class="btn {{ $conjunto->activo ? 'red' : 'primary' }}">{{ $conjunto->activo ? 'Desactivar conjunto' : 'Activar conjunto' }}</button>
     </form>
 </section>
 
-<section class="panel">
-    <h2>Anadir pieza al conjunto</h2>
+<section class="panel instrumental-panel instrumental-add">
+    <h2>AÃ±adir pieza al conjunto</h2>
     <form method="POST" action="{{ route('esterilizacion.instrumental.agregar', $conjunto) }}" class="grid grid-2-2-1-auto">
         @csrf
         <div>
-            <label for="instrumento_id">Instrumento existente</label>
-            <select id="instrumento_id" name="instrumento_id">
-                <option value="">Seleccione (o cree uno nuevo)</option>
-                @foreach($instrumentos as $instrumento)
-                    <option value="{{ $instrumento->id }}">{{ $instrumento->nombre }}@if($instrumento->codigo) ({{ $instrumento->codigo }})@endif</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
             <label for="nuevo_instrumento">Nuevo instrumento</label>
-            <input id="nuevo_instrumento" type="text" name="nuevo_instrumento" value="{{ old('nuevo_instrumento') }}" placeholder="Nombre de la pieza nueva">
+            <input id="nuevo_instrumento" type="text" name="nuevo_instrumento" value="{{ old('nuevo_instrumento') }}" placeholder="Nombre del instrumento" required>
+            <small class="muted">Si ya existe en el catÃ¡logo, escribe el mismo nombre y cÃ³digo para reutilizarlo. No se puede agregar dos veces al mismo material.</small>
         </div>
         <div>
-            <label for="nuevo_codigo">Codigo (opcional)</label>
+            <label for="nuevo_codigo">CÃ³digo (opcional)</label>
             <input id="nuevo_codigo" type="text" name="nuevo_codigo" value="{{ old('nuevo_codigo') }}" placeholder="Ej. 15-0121">
         </div>
         <div>
@@ -66,19 +55,19 @@
             <input id="cantidad_predeterminada" type="number" name="cantidad_predeterminada" min="1" step="1" value="1" required>
         </div>
         <div class="field-actions-end">
-            <button type="submit" class="btn green">Anadir</button>
+            <button type="submit" class="btn primary">AÃ±adir</button>
         </div>
     </form>
 </section>
 
-<section class="panel">
-    <h2>Piezas del conjunto ({{ $conjunto->instrumentos->count() }})</h2>
+<section class="panel instrumental-panel instrumental-pieces">
+    <div class="title-meta-row instrumental-pieces-heading"><h2 class="no-margin">Piezas del conjunto</h2><div class="instrumental-totals-inline"><span><strong>Total de tipos de piezas:</strong> {{ $totalTiposPiezas }}</span><span><strong>Cantidad total de instrumentos:</strong> {{ $cantidadTotalInstrumentos }}</span></div></div>
     <table>
         <thead>
             <tr>
                 <th class="col-150">Cantidad</th>
                 <th>Instrumento</th>
-                <th>Codigo</th>
+                <th>CÃ³digo</th>
                 <th class="col-230">Acciones</th>
             </tr>
         </thead>
@@ -94,7 +83,7 @@
                         </form>
                     </td>
                     <td>{{ $instrumento->nombre }} @if(!$instrumento->activo)<span class="badge SISTEMA">Inactivo</span>@endif</td>
-                    <td>{{ $instrumento->codigo ?? '—' }}</td>
+                    <td>{{ $instrumento->codigo ?? 'â€”' }}</td>
                     <td>
                         <form method="POST" action="{{ route('esterilizacion.instrumental.quitar-pieza', [$conjunto, $instrumento]) }}" class="inline-form form-eliminar">
                             @csrf

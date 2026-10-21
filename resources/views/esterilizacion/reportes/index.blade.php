@@ -3,83 +3,64 @@
 @section('title', 'Reportes Excel')
 
 @section('content')
-<h1>Reportes Excel</h1>
+<header class="reportes-header">
+    <span class="reportes-kicker">CENTRAL DE ESTERILIZACIÓN</span>
+    <h1>Reportes Excel</h1>
+    <p>Define las fechas de inicio y fin para consultar el rango que necesitas.</p>
+</header>
 
-<p class="muted">
-    Elige el tipo de reporte y el periodo a consultar. El año es obligatorio; el mes se completa
-    cuando eliges consulta por mes o por día, y el día solo cuando la consulta es por día.
-    Si no existen registros para el periodo no se genera el archivo.
-</p>
-
-<section class="panel">
-    <h2>1. Reporte operativo por áreas</h2>
-    <p class="muted">
-        Un registro por proceso agrupado en secciones de Área Roja, Área Azul, Área Verde y Observación,
-        con los responsables de cada etapa. Listo para imprimir.
-    </p>
-    <form method="GET" action="{{ route('esterilizacion.reportes.operativo') }}" class="grid filters-grid" data-form-periodo>
-        @include('esterilizacion.reportes._periodo', ['prefijo' => 'operativo'])
-        <div class="field-actions">
-            <button type="submit" class="btn green">Descargar Excel</button>
+<div class="reportes-grid">
+    <section class="panel reporte-card">
+        <div class="reporte-card-heading">
+            <span class="reporte-numero">01</span>
+            <div>
+                <h2>Reporte operativo por áreas</h2>
+                <p>Procesos y responsables de las áreas Roja, Azul, Verde y Observación.</p>
+            </div>
         </div>
-    </form>
-</section>
+        <form method="GET" action="{{ route('esterilizacion.reportes.operativo') }}" class="reporte-form" data-form-periodo>
+            @include('esterilizacion.reportes._periodo', ['prefijo' => 'operativo'])
+            <button type="submit" class="btn primary">Descargar Excel</button>
+        </form>
+    </section>
 
-<section class="panel">
-    <h2>2. Reporte completo actual</h2>
-    <p class="muted">
-        Todas las acciones registradas (usuarios, áreas, procesos y descripciones) con sus mismas
-        columnas y datos, consultadas por el periodo elegido.
-    </p>
-    <form method="GET" action="{{ route('esterilizacion.reportes.completo') }}" class="grid filters-grid" data-form-periodo>
-        @include('esterilizacion.reportes._periodo', ['prefijo' => 'completo'])
-        <div class="field-actions">
-            <button type="submit" class="btn green">Descargar Excel</button>
+    <section class="panel reporte-card">
+        <div class="reporte-card-heading">
+            <span class="reporte-numero">02</span>
+            <div>
+                <h2>Reporte completo</h2>
+                <p>Acciones, usuarios, áreas y procesos registrados durante el período elegido.</p>
+            </div>
         </div>
-    </form>
-</section>
+        <form method="GET" action="{{ route('esterilizacion.reportes.completo') }}" class="reporte-form" data-form-periodo>
+            @include('esterilizacion.reportes._periodo', ['prefijo' => 'completo'])
+            <button type="submit" class="btn primary">Descargar Excel</button>
+        </form>
+    </section>
 
-<section class="panel">
-    <h2>3. Reporte por usuario</h2>
-    <p class="muted">
-        Actividad registrada por el usuario seleccionado en el periodo elegido, con el responsable
-        de cada etapa del proceso.
-    </p>
-    <form method="GET" action="{{ route('esterilizacion.reportes.usuario') }}" class="grid filters-grid" data-form-periodo>
-        <div>
-            <label for="usuario_reporte">Usuario</label>
-            <select id="usuario_reporte" name="usuario_id" required>
-                <option value="">Seleccione</option>
-                @foreach($usuarios as $usuario)
-                    <option value="{{ $usuario->id }}">{{ $usuario->nombre_completo }}</option>
-                @endforeach
-            </select>
+    <section class="panel reporte-card">
+        <div class="reporte-card-heading">
+            <span class="reporte-numero">03</span>
+            <div>
+                <h2>Reporte por usuario</h2>
+                <p>Actividad del usuario seleccionado durante el período elegido.</p>
+            </div>
         </div>
-        @include('esterilizacion.reportes._periodo', ['prefijo' => 'usuario'])
-        <div class="field-actions">
-            <button type="submit" class="btn green">Descargar Excel</button>
-        </div>
-    </form>
-</section>
+        <form method="GET" action="{{ route('esterilizacion.reportes.usuario') }}" class="reporte-form" data-form-periodo>
+            <div class="reporte-periodo">
+                <label for="usuario_reporte">Usuario</label>
+                <select id="usuario_reporte" name="usuario_id" required>
+                    <option value="">Selecciona un usuario</option>
+                    @foreach($usuarios as $usuario)
+                        <option value="{{ $usuario->id }}" @selected((string) old('usuario_id') === (string) $usuario->id)>{{ $usuario->nombre_completo }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @include('esterilizacion.reportes._periodo', ['prefijo' => 'usuario'])
+            <button type="submit" class="btn primary">Descargar Excel</button>
+        </form>
+    </section>
+</div>
 
-<script>
-document.querySelectorAll('form[data-form-periodo]').forEach(function (form) {
-    const tipo = form.querySelector('[data-tipo-periodo]');
-    const mesWrap = form.querySelector('[data-mes-wrap]');
-    const diaWrap = form.querySelector('[data-dia-wrap]');
-    const mes = form.querySelector('[data-mes]');
-    const dia = form.querySelector('[data-dia]');
 
-    function aplicar() {
-        const valor = tipo.value;
-        mesWrap.hidden = valor === 'anio';
-        diaWrap.hidden = valor !== 'dia';
-        mes.disabled = valor === 'anio';
-        dia.disabled = valor !== 'dia';
-    }
-
-    tipo.addEventListener('change', aplicar);
-    aplicar();
-});
-</script>
 @endsection

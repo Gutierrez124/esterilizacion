@@ -36,6 +36,25 @@ class Usuario extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function setNombresAttribute($value): void
+    {
+        $this->attributes['nombres'] = mb_strtoupper(trim((string) $value), 'UTF-8');
+    }
+
+    public function setApellidosAttribute($value): void
+    {
+        $this->attributes['apellidos'] = mb_strtoupper(trim((string) $value), 'UTF-8');
+    }
+
+    public function setDniAttribute($value): void
+    {
+        $this->attributes['dni'] = $value === null || trim((string) $value) === '' ? null : mb_strtoupper(trim((string) $value), 'UTF-8');
+    }
+
+    public function setCodigoAttribute($value): void
+    {
+        $this->attributes['codigo'] = $value === null || trim((string) $value) === '' ? null : mb_strtoupper(trim((string) $value), 'UTF-8');
+    }
     public function getNombreCompletoAttribute(): string
     {
         return trim(($this->nombres ?? '').' '.($this->apellidos ?? ''))

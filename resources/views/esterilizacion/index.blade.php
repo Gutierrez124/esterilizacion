@@ -3,9 +3,9 @@
 @section('title', 'Procesos de esterilización')
 
 @section('content')
-    <div class="detail-actions"><h1 class="no-margin">Procesos de esterilización</h1><a class="btn primary" href="{{ route('esterilizacion.roja.create') }}">Nuevo proceso</a></div>
+    <div class="detail-actions process-page-header process-header-actions"><a class="btn primary" href="{{ route('esterilizacion.roja.create') }}">Nuevo proceso</a></div>
 
-    <section class="panel">
+    <section class="panel process-filters">
         <form method="GET" action="{{ route('esterilizacion.procesos.index') }}" class="grid filters-grid">
             <div>
                 <label for="fecha_desde">Desde</label>

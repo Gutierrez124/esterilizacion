@@ -1,27 +1,26 @@
 @extends('layouts.app')
 
-@section('title', 'Registrar Area Azul')
+@section('title', 'Registrar Área Azul')
 
 @section('content')
-<div class="detail-actions">
+<div class="detail-actions area-page-header area-azul-header">
     <div class="title-with-back">
         <a class="btn" href="{{ route('esterilizacion.procesos.show', $proceso) }}" title="Volver al proceso" aria-label="Volver al proceso"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></a>
-        <h1 class="no-margin">Registrar Area Azul - Proceso #{{ $proceso->getKey() }}</h1>
+        <h1 class="no-margin">Registrar Área Azul - Proceso #{{ $proceso->getKey() }}</h1>
     </div>
 </div>
 
-<section class="panel">
+<section class="panel area-form-card area-context-card">
     <div class="summary">
         <div><span>Fecha</span>{{ optional($proceso->fecha)->format('d/m/Y') ?? $proceso->fecha }}</div>
-        <div><span>Servicio</span>{{ $proceso->servicio?->nombre ?? $proceso->servicio?->descripcion ?? $proceso->servicio_id }}</div>
-        <div><span>Material</span>{{ $proceso->material?->nombre ?? $proceso->material?->descripcion ?? $proceso->material_id }}</div>
+        <div><span>Servicios y materiales</span>{{ $proceso->instrumentos->map(fn($i) => ($i->servicio?->nombre ?? "Servicio histórico")." · ".($i->material?->nombre ?? "Material histórico"))->unique()->implode(", ") ?: "Sin detalle de instrumental" }}</div>
         <div><span>Cantidad</span>{{ $proceso->cantidad_piezas }}</div>
         <div><span>Estado</span><span class="badge {{ $proceso->estado_actual }}">{{ $proceso->estado_actual }}</span></div>
     </div>
 </section>
 
-<section class="panel">
-    <form method="POST" action="{{ route('esterilizacion.azul.store', $proceso) }}" class="grid">
+<section class="panel area-form-card">
+    <form method="POST" action="{{ route('esterilizacion.azul.store', $proceso) }}" class="grid area-form area-azul-form">
         @csrf
         <div>
             <label for="hora">Hora</label>
@@ -45,7 +44,7 @@
             </select>
         </div>
         <div>
-            <label for="numero_carga">Numero de carga</label>
+            <label for="numero_carga">Número de carga</label>
             <input id="numero_carga" name="numero_carga" value="{{ old('numero_carga') }}" maxlength="50" class="upper" required>
         </div>
         <div>
@@ -76,7 +75,7 @@
             </select>
         </div>
         <div class="field-actions-end">
-            <button class="btn blue" type="submit">Guardar Area Azul</button>
+            <button class="btn blue" type="submit">Guardar Área Azul</button>
         </div>
     </form>
 </section>

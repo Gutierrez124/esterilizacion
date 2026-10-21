@@ -20,6 +20,7 @@ class InstrumentalController extends Controller
         $conjuntos = Material::query()
             ->with('servicio')
             ->withCount('instrumentos')
+            ->withSum('instrumentos as cantidad_total_instrumentos', 'material_instrumentos.cantidad_predeterminada')
             ->when($request->filled('buscar'), fn ($q) => $q->where('nombre', 'like', '%'.$request->buscar.'%'))
             ->when($request->filled('servicio_id'), fn ($q) => $q->where('servicio_id', $request->servicio_id))
             ->orderBy('nombre')
@@ -45,7 +46,7 @@ class InstrumentalController extends Controller
 
         $auditoria->registrar(
             accion: 'INSTRUMENTAL_CREADO',
-            area: 'ROJA',
+            area: '—',
             descripcion: "Conjunto de instrumental creado: {$conjunto->nombre}.",
             entidad: 'materiales',
             entidadId: $conjunto->getKey(),
@@ -59,11 +60,15 @@ class InstrumentalController extends Controller
     public function show(Material $material): View
     {
         $material->load(['servicio', 'instrumentos' => fn ($q) => $q->orderBy('nombre')]);
+        $totalTiposPiezas = $material->instrumentos->count();
+        $cantidadTotalInstrumentos = $material->instrumentos->sum(fn ($instrumento) => (int) $instrumento->pivot->cantidad_predeterminada);
 
         return view('esterilizacion.instrumental.show', [
             'conjunto' => $material,
             'servicios' => Servicio::query()->orderBy('nombre')->get(),
             'instrumentos' => Instrumento::query()->where('activo', 1)->orderBy('nombre')->get(),
+            'totalTiposPiezas' => $totalTiposPiezas,
+            'cantidadTotalInstrumentos' => $cantidadTotalInstrumentos,
         ]);
     }
 
@@ -78,7 +83,7 @@ class InstrumentalController extends Controller
 
         $auditoria->registrar(
             accion: 'INSTRUMENTAL_ACTUALIZADO',
-            area: 'ROJA',
+            area: '—',
             descripcion: "Conjunto de instrumental actualizado: {$material->nombre}.",
             entidad: 'materiales',
             entidadId: $material->getKey(),
@@ -117,7 +122,7 @@ class InstrumentalController extends Controller
 
             $auditoria->registrar(
                 accion: 'INSTRUMENTAL_ACTUALIZADO',
-                area: 'ROJA',
+                area: '—',
                 descripcion: "Pieza agregada al conjunto {$material->nombre}.",
                 entidad: 'material_instrumentos',
                 entidadId: $material->getKey(),
@@ -142,7 +147,7 @@ class InstrumentalController extends Controller
 
         $auditoria->registrar(
             accion: 'INSTRUMENTAL_ACTUALIZADO',
-            area: 'ROJA',
+            area: '—',
             descripcion: "Cantidad predeterminada actualizada en {$material->nombre}.",
             entidad: 'material_instrumentos',
             entidadId: $material->getKey(),
@@ -160,7 +165,7 @@ class InstrumentalController extends Controller
 
         $auditoria->registrar(
             accion: 'INSTRUMENTAL_DESACTIVADO',
-            area: 'ROJA',
+            area: '—',
             descripcion: "Pieza retirada del conjunto {$material->nombre}.",
             entidad: 'material_instrumentos',
             entidadId: $material->getKey(),
@@ -178,7 +183,7 @@ class InstrumentalController extends Controller
 
         $auditoria->registrar(
             accion: 'INSTRUMENTAL_DESACTIVADO',
-            area: 'ROJA',
+            area: '—',
             descripcion: "Estado del conjunto {$material->nombre} cambiado a ".($material->activo ? 'activo' : 'inactivo').'.',
             entidad: 'materiales',
             entidadId: $material->getKey(),
@@ -193,7 +198,7 @@ class InstrumentalController extends Controller
 
         $auditoria->registrar(
             accion: 'INSTRUMENTAL_DESACTIVADO',
-            area: 'ROJA',
+            area: '—',
             descripcion: "Estado del instrumento {$instrumento->nombre} cambiado a ".($instrumento->activo ? 'activo' : 'inactivo').'.',
             entidad: 'instrumentos',
             entidadId: $instrumento->getKey(),

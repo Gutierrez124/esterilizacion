@@ -25,7 +25,7 @@ class AuditoriaService
     ): Auditoria {
         return Auditoria::create([
             'usuario_id' => $usuario?->getKey() ?? Auth::id(),
-            'responsable_id' => $responsableId,
+            'responsable_id' => $responsableId ?? Auth::id() ?? $usuario?->getKey(),
             'accion' => $accion,
             'area' => $area,
             'descripcion' => $descripcion,

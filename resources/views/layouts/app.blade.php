@@ -16,10 +16,7 @@
             <img class="brand-logo" src="{{ asset('logos/BellaVistaSidenav.png') }}" alt="Logo hospital">
             <span>Control de esterilización<small>Gestión hospitalaria</small></span>
         </div>
-        @auth
-            <div class="nav-user">{{ Auth::user()->nombre_completo }} ({{ Auth::user()->rol }})</div>
-        @endauth
-        <a href="{{ route('esterilizacion.procesos.index') }}" class="nav-item @if(request()->routeIs('esterilizacion.procesos.*','esterilizacion.roja.*','esterilizacion.azul.*','esterilizacion.verde.*')) active @endif">
+<a href="{{ route('esterilizacion.procesos.index') }}" class="nav-item @if(request()->routeIs('esterilizacion.procesos.*','esterilizacion.roja.*','esterilizacion.azul.*','esterilizacion.verde.*')) active @endif">
             <span class="nav-icon">&#8635;</span> Proceso
         </a>
         <a href="{{ route('esterilizacion.instrumental.index') }}" class="nav-item @if(request()->routeIs('esterilizacion.instrumental.*','esterilizacion.instrumentos.*')) active @endif">
@@ -97,6 +94,163 @@
     @endif
 </div>
 @stack('scripts')
+<script>
+(function () {
+    function enhanceSelect(select) {
+        if (select.dataset.searchEnhanced || select.multiple || select.size > 1) return;
+        select.dataset.searchEnhanced = 'true';
+        const required = select.required;
+        select.required = false;
+        select.tabIndex = -1;
+        select.setAttribute('aria-hidden', 'true');
+        select.classList.add('searchable-native-select');
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'searchable-select';
+        select.parentNode.insertBefore(wrapper, select);
+        wrapper.appendChild(select);
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'searchable-select-input';
+        input.autocomplete = 'off';
+        input.placeholder = 'Escribe para buscar...';
+        input.autocapitalize = 'off';
+        input.spellcheck = false;
+        input.setAttribute('role', 'combobox');
+        input.setAttribute('aria-autocomplete', 'list');
+        input.setAttribute('aria-expanded', 'false');
+        input.setAttribute('aria-label', select.labels?.[0]?.textContent?.trim() || 'Buscar opción');
+        input.required = required;
+        input.disabled = select.disabled;
+        const list = document.createElement('div');
+        list.className = 'searchable-select-options';
+        list.setAttribute('role', 'listbox');
+        wrapper.append(input, list);
+
+        const label = select.id ? document.querySelector(`label[for="${select.id}"]`) : null;
+        if (label) label.htmlFor = input.id = `${select.id}_search`;
+        const state = { open: false, active: -1, editing: false };
+
+        function chosenOption() {
+            return select.options[select.selectedIndex] || null;
+        }
+        function syncValue() {
+            if (state.editing) return;
+            const option = chosenOption();
+            input.value = option?.textContent.trim() || '';
+            input.disabled = select.disabled;
+            input.setCustomValidity(required && !select.value ? 'Selecciona una opción de la lista.' : '');
+        }
+        function close() {
+            state.open = false;
+            state.active = -1;
+            list.hidden = true;
+            input.setAttribute('aria-expanded', 'false');
+        }
+        function choose(option) {
+            if (!option || option.disabled) return;
+            select.value = option.value;
+            syncValue();
+            close();
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        function render(query = '') {
+            const needle = query.trim().toLocaleLowerCase();
+            list.replaceChildren();
+            const options = [...select.options].filter(option =>
+                option.textContent.toLocaleLowerCase().includes(needle)
+            );
+            options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'searchable-select-option';
+                button.setAttribute('role', 'option');
+                button.setAttribute('aria-selected', String(option.value === select.value));
+                button.textContent = option.textContent.trim();
+                button.disabled = option.disabled;
+                button.addEventListener('mousedown', event => event.preventDefault());
+                button.addEventListener('click', () => choose(option));
+                list.appendChild(button);
+            });
+            if (!options.length) {
+                const empty = document.createElement('div');
+                empty.className = 'searchable-select-empty';
+                empty.textContent = 'No se encontraron opciones.';
+                list.appendChild(empty);
+            }
+            list.hidden = !state.open;
+        }
+
+        input.addEventListener('focus', () => {
+            state.open = true;
+            input.select();
+            render(input.value === chosenOption()?.textContent.trim() ? '' : input.value);
+            input.setAttribute('aria-expanded', 'true');
+        });
+        input.addEventListener('input', () => {
+            state.open = true;
+            if (select.value !== '') {
+                state.editing = true;
+                select.value = '';
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+                state.editing = false;
+            }
+            input.setCustomValidity(required ? 'Selecciona una opción de la lista.' : '');
+            render(input.value);
+            input.setAttribute('aria-expanded', 'true');
+        });
+        input.addEventListener('keydown', event => {
+            const options = [...list.querySelectorAll('.searchable-select-option:not(:disabled)')];
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                state.open = true;
+                render(input.value === chosenOption()?.textContent.trim() ? '' : input.value);
+                const rows = [...list.querySelectorAll('.searchable-select-option:not(:disabled)')];
+                state.active = event.key === 'ArrowDown'
+                    ? Math.min(state.active + 1, rows.length - 1)
+                    : Math.max(state.active - 1, 0);
+                rows.forEach((row, index) => row.classList.toggle('is-active', index === state.active));
+                rows[state.active]?.scrollIntoView({ block: 'nearest' });
+            } else if (event.key === 'Enter' && state.open) {
+                event.preventDefault();
+                const rows = [...list.querySelectorAll('.searchable-select-option:not(:disabled)')];
+                if (state.active < 0 && select.value) { close(); return; }
+                choose(rows[state.active] || rows[0]);
+            } else if (event.key === 'Escape') {
+                close();
+                syncValue();
+            }
+        });
+        select.addEventListener('change', () => { syncValue(); render(); });
+        select.addEventListener('reset', syncValue);
+        new MutationObserver(() => { render(); syncValue(); }).observe(select, { childList: true, subtree: true });
+        select.form?.addEventListener('reset', () => setTimeout(syncValue));
+        document.addEventListener('click', event => { if (!wrapper.contains(event.target)) close(); });
+        syncValue();
+        render();
+    }
+
+    document.querySelectorAll('select').forEach(enhanceSelect);
+
+    document.addEventListener('input', event => {
+        const field = event.target;
+        if (!field.matches('input[type="text"], input[type="search"], textarea') || event.isComposing) return;
+        const start = field.selectionStart;
+        const end = field.selectionEnd;
+        const upper = field.value.toLocaleUpperCase('es-PE');
+        if (upper === field.value) return;
+        field.value = upper;
+        if (start !== null && end !== null) field.setSelectionRange(start, end);
+    });
+
+    document.addEventListener('submit', event => {
+        event.target.querySelectorAll('input[type="text"], input[type="search"], textarea').forEach(field => {
+            field.value = field.value.toLocaleUpperCase('es-PE');
+        });
+    });
+})();
+</script>
 <script>
     const sidenav = document.getElementById('sidenav');
     const overlay = document.getElementById('overlay');

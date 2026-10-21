@@ -1,6 +1,5 @@
 @php
-    $servicioNombre = fn($servicio) => $servicio?->nombre ?? $servicio?->descripcion ?? 'Servicio '.$servicio?->getKey();
-    $materialNombre = fn($material) => $material?->nombre ?? $material?->descripcion ?? 'Material '.$material?->getKey();
+    $grupos = fn($proceso) => $proceso->instrumentos->groupBy(fn($i) => ($i->servicio_id ?? "x")."-".($i->material_id ?? "x"));
     $usuarioNombre = fn($usuario) => $usuario?->nombre_completo ?? $usuario?->nombre ?? trim(($usuario?->nombres ?? '').' '.($usuario?->apellidos ?? '')) ?: 'Usuario '.$usuario?->getKey();
 @endphp
 <div class="table-responsive process-table">
@@ -24,8 +23,8 @@
                     <td class="col-id">{{ $proceso->getKey() }}</td>
                     <td class="col-date">{{ optional($proceso->fecha)->format('d/m/Y') ?? $proceso->fecha }}</td>
                     <td class="col-shift">{{ $proceso->turno }}</td>
-                    <td class="col-service">{{ $servicioNombre($proceso->servicio) }}</td>
-                    <td class="col-material">{{ $materialNombre($proceso->material) }}</td>
+                    <td class="col-service">{{ $grupos($proceso)->map(fn($g) => $g->first()?->servicio?->nombre ?? "Servicio histrico")->unique()->implode(", ") ?: "—" }}</td>
+                    <td class="col-material">{{ $grupos($proceso)->map(fn($g) => $g->first()?->material?->nombre ?? "Material histrico")->unique()->implode(", ") ?: "—" }}</td>
                     <td class="col-quantity">{{ $proceso->cantidad_piezas }}</td>
                     <td class="col-operator">{{ $usuarioNombre($proceso->operador) }}</td>
                     <td class="col-area"><span class="badge {{ $proceso->estado_actual }}">{{ $proceso->estado_actual }}</span></td>
@@ -35,7 +34,7 @@
                             @if($proceso->estado_actual === 'ROJA')
                                 <a class="btn sm blue tooltip" href="{{ route('esterilizacion.azul.create', $proceso) }}" data-tooltip="Área Azul" aria-label="Registrar Área Azul">RA</a>
                             @elseif($proceso->estado_actual === 'AZUL')
-                                <a class="btn sm green tooltip" href="{{ route('esterilizacion.verde.create', $proceso) }}" data-tooltip="Área Verde" aria-label="Registrar Área Verde">RV</a>
+                                <a class="btn sm primary tooltip" href="{{ route('esterilizacion.verde.create', $proceso) }}" data-tooltip="Área Verde" aria-label="Registrar Área Verde">RV</a>
                             @endif
                             <form method="POST" action="{{ route('esterilizacion.procesos.destroy', $proceso) }}" class="form-eliminar">
                                 @csrf

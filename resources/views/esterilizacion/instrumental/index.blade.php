@@ -3,10 +3,10 @@
 @section('title', 'Instrumentos por material')
 
 @section('content')
-<h1>Instrumentos por material</h1>
 
-<section class="panel">
-    <h2>Filtros y busqueda</h2>
+
+<section class="panel instrumental-panel instrumental-filters">
+    <h2>Filtros y búsqueda</h2>
     <form method="GET" action="{{ route('esterilizacion.instrumental.index') }}" class="grid filters-grid">
         <div>
             <label for="buscar">Buscar por nombre</label>
@@ -28,7 +28,7 @@
     </form>
 </section>
 
-<section class="panel">
+<section class="panel instrumental-panel instrumental-create">
     <h2>Crear nuevo conjunto</h2>
     <form method="POST" action="{{ route('esterilizacion.instrumental.store') }}" class="grid grid-1-1-auto">
         @csrf
@@ -46,12 +46,12 @@
             </select>
         </div>
         <div class="field-actions-end">
-            <button type="submit" class="btn green">Crear conjunto</button>
+            <button type="submit" class="btn primary">Crear conjunto</button>
         </div>
     </form>
 </section>
 
-<section class="panel">
+<section class="panel instrumental-panel instrumental-list">
     <h2>Conjuntos de instrumental ({{ $conjuntos->total() }})</h2>
     <div class="table-responsive instrumental-table">
         <table>
@@ -59,9 +59,9 @@
                 <tr>
                     <th>Nombre</th>
                     <th>Servicio</th>
-                    <th class="col-110">Piezas</th>
+                    <th class="col-110">Cantidad total de instrumentos</th>
                     <th class="col-110">Estado</th>
-                    <th class="col-120">Accion</th>
+                    <th class="col-120">Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -69,16 +69,16 @@
                     <tr>
                         <td><strong>{{ $conjunto->nombre }}</strong></td>
                         <td>{{ $conjunto->servicio?->nombre ?? $conjunto->servicio?->descripcion ?? 'Sin servicio' }}</td>
-                        <td>{{ $conjunto->instrumentos_count }}</td>
+                        <td>{{ $conjunto->cantidad_total_instrumentos ?? 0 }}</td>
                         <td><span class="badge {{ $conjunto->activo ? 'VERDE' : 'SISTEMA' }}">{{ $conjunto->activo ? 'Activo' : 'Inactivo' }}</span></td>
                         <td><a href="{{ route('esterilizacion.instrumental.show', $conjunto) }}" class="btn sm primary">Administrar</a></td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="muted">No hay conjuntos que coincidan con la busqueda.</td></tr>
+                    <tr><td colspan="5" class="muted">No hay conjuntos que coincidan con la búsqueda.</td></tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-    <div class="pagination">{{ $conjuntos->links() }}</div>
+    <div class="pagination instrumental-pagination">{{ $conjuntos->links('vendor.pagination.instrumental') }}</div>
 </section>
 @endsection

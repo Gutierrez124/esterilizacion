@@ -41,6 +41,12 @@ class PerfilController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
+        foreach (['nombres', 'apellidos', 'dni', 'codigo'] as $campo) {
+            if (is_string($request->input($campo))) {
+                $request->merge([$campo => mb_strtoupper(trim($request->input($campo)), 'UTF-8')]);
+            }
+        }
+
         $usuario = Auth::user();
 
         $datos = $request->validate([

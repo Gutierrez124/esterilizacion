@@ -4,8 +4,7 @@
 
 @section('content')
 @php
-    $servicio = $proceso->servicio?->nombre ?? $proceso->servicio?->descripcion ?? 'Servicio '.$proceso->servicio_id;
-    $material = $proceso->material?->nombre ?? $proceso->material?->descripcion ?? 'Material '.$proceso->material_id;
+    $grupos = $proceso->instrumentos->groupBy(fn($i) => ($i->servicio_id ?? "sin-servicio")."-".($i->material_id ?? "sin-material"));
     $usuario = function ($u) {
         if (! $u) {
             return 'Pendiente';
@@ -27,7 +26,7 @@
     @if($proceso->estado_actual === 'ROJA')
         <a class="btn blue" href="{{ route('esterilizacion.azul.create', $proceso) }}">Registrar Area Azul</a>
     @elseif($proceso->estado_actual === 'AZUL')
-        <a class="btn green" href="{{ route('esterilizacion.verde.create', $proceso) }}">Registrar Area Verde</a>
+        <a class="btn primary" href="{{ route('esterilizacion.verde.create', $proceso) }}">Registrar Area Verde</a>
     @endif
     <form method="POST" action="{{ route('esterilizacion.procesos.destroy', $proceso) }}" class="form-eliminar">
         @csrf
@@ -40,7 +39,7 @@
     <div class="section-title service">Servicio</div>
     <div class="summary">
         <div><span>Identificador</span>{{ $proceso->getKey() }}</div>
-        <div><span>Servicio</span>{{ $servicio }}</div>
+        <div><span>Servicio</span>{{ $grupos->map(fn($g) => $g->first()?->servicio?->nombre ?? 'Servicio histÃ³rico')->unique()->implode(', ') ?: 'Sin servicio asociado' }}</div>
         <div><span>Area actual</span><span class="badge {{ $proceso->estado_actual }}">{{ $proceso->estado_actual }}</span></div>
         <div><span>Registrado por</span>{{ $usuario($proceso->creadoPor) }}</div>
 
@@ -55,7 +54,7 @@
         <div><span>Hora</span>{{ $hora($proceso->hora) }}</div>
         <div><span>Recibe</span>{{ $usuario($proceso->personaRecibe) }}</div>
         <div><span>Entrega</span>{{ $usuario($proceso->personaEntrega) }}</div>
-        <div><span>Material/Instrumental</span>{{ $material }}</div>
+
         <div><span>Cantidad de piezas</span>{{ $proceso->cantidad_piezas }}</div>
         <div><span>Tipo de lavado</span>{{ $proceso->tipo_lavado }}</div>
         <div><span>Equipo biomédico a usar</span>{{ $proceso->equipo_biomedico_label ?: 'Pendiente' }}</div>
@@ -64,32 +63,21 @@
 </section>
 <section class="panel">
     <div class="section-title red">Detalle de instrumental recibido</div>
-    @if($proceso->instrumentos->count())
-        <table>
-            <thead>
-                <tr>
-                    <th class="col-120">Cantidad real</th>
-                    <th>Instrumento</th>
-                    <th>Codigo</th>
-                    <th class="col-130">Predeterminada</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($proceso->instrumentos as $pieza)
-                    <tr>
-                        <td><strong>{{ $pieza->cantidad_real }}</strong></td>
-                        <td>{{ $pieza->nombre_instrumento }}</td>
-                        <td>{{ $pieza->codigo_instrumento ?? '—' }}</td>
-                        <td>{{ $pieza->cantidad_predeterminada }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @else
+    @forelse($grupos as $grupo)
+        <details class="instrument-group">
+            <summary>{{ $grupo->first()?->servicio?->nombre ?? 'Servicio historico' }} · {{ $grupo->first()?->material?->nombre ?? 'Material historico' }}</summary>
+            <table>
+                <thead><tr><th>Instrumento</th><th>Codigo</th><th>Predeterminada</th><th>Real</th></tr></thead>
+                <tbody>
+                    @foreach($grupo as $pieza)
+                        <tr><td>{{ $pieza->nombre_instrumento }}</td><td>{{ $pieza->codigo_instrumento ?? '—' }}</td><td>{{ $pieza->cantidad_predeterminada }}</td><td><strong>{{ $pieza->cantidad_real }}</strong></td></tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </details>    @empty
         <p class="muted">Este proceso no tiene detalle de instrumental registrado.</p>
-    @endif
+    @endforelse
 </section>
-
 <section class="panel">
     <div class="section-title blue">Area Azul</div>
     @if($proceso->areaAzul)

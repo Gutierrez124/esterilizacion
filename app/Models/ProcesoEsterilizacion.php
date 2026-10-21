@@ -32,16 +32,6 @@ class ProcesoEsterilizacion extends Model
         return self::EQUIPOS_BIOMEDICOS_ROJA[$this->equipo_biomedico] ?? (string) $this->equipo_biomedico;
     }
 
-    public function servicio()
-    {
-        return $this->belongsTo(Servicio::class, 'servicio_id');
-    }
-
-    public function material()
-    {
-        return $this->belongsTo(Material::class, 'material_id');
-    }
-
     public function personaRecibe()
     {
         return $this->belongsTo(Usuario::class, 'recibe_id');

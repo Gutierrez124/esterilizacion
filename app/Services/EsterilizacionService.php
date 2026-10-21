@@ -6,7 +6,6 @@ use App\Models\AreaAzul;
 use App\Models\AreaVerde;
 use App\Models\Material;
 use App\Models\ProcesoEsterilizacion;
-use App\Models\ProcesoInstrumento;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -24,46 +23,43 @@ class EsterilizacionService
 
             $creadoPorId = $usuario?->getKey();
 
-            $material = Material::query()
-                ->with(['instrumentos' => fn ($q) => $q->where('activo', 1)])
-                ->findOrFail($data['material_id']);
-
-            $predeterminadas = $material->instrumentos
-                ->mapWithKeys(fn ($instrumento) => [
-                    $instrumento->getKey() => [
-                        'nombre' => $instrumento->nombre,
-                        'codigo' => $instrumento->codigo,
-                        'cantidad_predeterminada' => (int) $instrumento->pivot->cantidad_predeterminada,
-                    ],
-                ]);
-
-            $reales = collect($data['piezas'] ?? [])
-                ->keyBy('instrumento_id')
-                ->map(fn ($pieza) => (int) $pieza['cantidad_real']);
-
             $detalle = [];
             $totalReal = 0;
-
-            foreach ($reales as $instrumentoId => $cantidadReal) {
-                if (! $predeterminadas->has($instrumentoId)) {
-                    throw ValidationException::withMessages([
-                        'piezas' => 'El conjunto contiene piezas que no pertenecen a su catalogo.',
-                    ]);
+            $confirmados = collect($data['materiales_confirmados'] ?? []);
+            $llavesMaterial = [];
+            foreach ($confirmados as $indice => $grupo) {
+                $material = Material::query()->with(['instrumentos' => fn ($q) => $q->where('activo', 1)])
+                    ->where('activo', 1)->find($grupo['material_id']);
+                if (! $material || (int) $material->servicio_id !== (int) $grupo['servicio_id']) {
+                    throw ValidationException::withMessages(["materiales_confirmados.{$indice}.material_id" => 'El material no pertenece al servicio indicado o está inactivo.']);
                 }
-
-                $info = $predeterminadas[$instrumentoId];
-                $detalle[] = [
-                    'instrumento_id' => (int) $instrumentoId,
-                    'nombre_instrumento' => $info['nombre'],
-                    'codigo_instrumento' => $info['codigo'],
-                    'cantidad_predeterminada' => $info['cantidad_predeterminada'],
-                    'cantidad_real' => $cantidadReal,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-                $totalReal += $cantidadReal;
+                if (isset($llavesMaterial[$material->getKey()])) {
+                    throw ValidationException::withMessages(["materiales_confirmados.{$indice}.material_id" => 'No puedes agregar el mismo material más de una vez.']);
+                }
+                $llavesMaterial[$material->getKey()] = true;
+                $catalogo = $material->instrumentos->keyBy(fn ($i) => (int) $i->getKey());
+                $ids = [];
+                foreach ($grupo['piezas'] as $pieza) {
+                    $id = (int) $pieza['instrumento_id'];
+                    if (isset($ids[$id]) || ! $catalogo->has($id)) {
+                        throw ValidationException::withMessages(["materiales_confirmados.{$indice}.piezas" => 'Hay instrumentos repetidos o que no pertenecen al material confirmado.']);
+                    }
+                    $ids[$id] = true;
+                    $instrumento = $catalogo[$id];
+                    $cantidad = (int) $pieza['cantidad_real'];
+                    $detalle[] = [
+                        'servicio_id' => (int) $material->servicio_id,
+                        'material_id' => (int) $material->getKey(),
+                        'instrumento_id' => $id,
+                        'nombre_instrumento' => $instrumento->nombre,
+                        'codigo_instrumento' => $instrumento->codigo,
+                        'cantidad_predeterminada' => (int) $instrumento->pivot->cantidad_predeterminada,
+                        'cantidad_real' => $cantidad,
+                        'created_at' => now(), 'updated_at' => now(),
+                    ];
+                    $totalReal += $cantidad;
+                }
             }
-
             if ($totalReal < 1) {
                 throw ValidationException::withMessages([
                     'piezas' => 'El total de piezas recibidas debe ser al menos 1.',
@@ -71,13 +67,11 @@ class EsterilizacionService
             }
 
             $proceso = ProcesoEsterilizacion::create([
-                'servicio_id' => $data['servicio_id'],
                 'fecha' => $data['fecha'],
                 'turno' => $data['turno'],
                 'hora' => $data['hora'],
                 'recibe_id' => $data['persona_recibe_id'],
                 'entrega_id' => $data['persona_entrega_id'],
-                'material_id' => $data['material_id'],
                 'cantidad_piezas' => $totalReal,
                 'tipo_lavado' => $data['tipo_lavado'],
                 'equipo_biomedico' => $data['equipo_biomedico'],
@@ -89,8 +83,7 @@ class EsterilizacionService
             ]);
 
             foreach ($detalle as $pieza) {
-                $pieza['proceso_id'] = $proceso->getKey();
-                ProcesoInstrumento::create($pieza);
+                $proceso->instrumentos()->create($pieza);
             }
 
             $this->auditoria->registrar(
@@ -100,7 +93,7 @@ class EsterilizacionService
                 entidad: 'proceso_esterilizacion',
                 entidadId: $proceso->getKey(),
                 procesoId: $proceso->getKey(),
-                datos: ['material_id' => $proceso->material_id, 'total_piezas' => $totalReal],
+                datos: ['materiales' => count($llavesMaterial), 'total_piezas' => $totalReal],
             );
 
             $this->auditoria->registrar(

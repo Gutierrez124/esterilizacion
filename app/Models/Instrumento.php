@@ -20,6 +20,18 @@ class Instrumento extends Model
         'activo' => 'boolean',
     ];
 
+    public function setNombreAttribute($value): void
+    {
+        $this->attributes['nombre'] = mb_strtoupper(trim((string) $value), 'UTF-8');
+    }
+
+    public function setCodigoAttribute($value): void
+    {
+        $this->attributes['codigo'] = $value === null || trim((string) $value) === ''
+            ? null
+            : mb_strtoupper(trim((string) $value), 'UTF-8');
+    }
+
     public function materiales()
     {
         return $this->belongsToMany(Material::class, 'material_instrumentos', 'instrumento_id', 'material_id')

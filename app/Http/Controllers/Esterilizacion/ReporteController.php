@@ -26,23 +26,6 @@ class ReporteController extends Controller
                 ->orderBy('nombres')
                 ->orderBy('apellidos')
                 ->get(),
-            'anioActual' => (int) now()->format('Y'),
-            'mesActual' => (int) now()->format('n'),
-            'diaActual' => (int) now()->format('j'),
-            'meses' => [
-                1 => 'Enero',
-                2 => 'Febrero',
-                3 => 'Marzo',
-                4 => 'Abril',
-                5 => 'Mayo',
-                6 => 'Junio',
-                7 => 'Julio',
-                8 => 'Agosto',
-                9 => 'Septiembre',
-                10 => 'Octubre',
-                11 => 'Noviembre',
-                12 => 'Diciembre',
-            ],
         ]);
     }
 
@@ -52,8 +35,8 @@ class ReporteController extends Controller
 
         $procesos = ProcesoEsterilizacion::query()
             ->with([
-                'servicio',
-                'material',
+                'instrumentos.servicio',
+                'instrumentos.material',
                 'personaRecibe',
                 'personaEntrega',
                 'operador',
@@ -68,7 +51,7 @@ class ReporteController extends Controller
             ->get();
 
         if ($procesos->isEmpty()) {
-            return back()->with('status', 'No hay procesos registrados en el periodo '.$rango['descripcion'].'.');
+            return back()->withInput($request->query())->with('status', 'No hay procesos registrados en el periodo '.$rango['descripcion'].'.');
         }
 
         $reporte = [
@@ -77,6 +60,7 @@ class ReporteController extends Controller
             'subtitulos' => [
                 'Periodo: '.$rango['descripcion'],
                 'Generado: '.now()->format('d/m/Y H:i'),
+                'Procesos incluidos: '.$procesos->count(),
             ],
             'grupos' => [
                 ['titulo' => 'PROCESO', 'columnas' => 3, 'estilo' => 'proceso'],
@@ -112,7 +96,7 @@ class ReporteController extends Controller
                 'Fecha',
                 'Hora',
                 'Recibe',
-                'Observacion',
+                'Observación',
             ],
             'anchos' => [8, 24, 10, 12, 12, 8, 24, 24, 28, 12, 24, 16, 24, 24, 8, 18, 16, 12, 16, 24, 24, 24, 24, 12, 8, 24, 45],
             'filas' => $procesos->map(fn (ProcesoEsterilizacion $proceso) => $this->filaOperativa($proceso))->all(),
@@ -136,7 +120,7 @@ class ReporteController extends Controller
         $datos = $estadisticas->datosExportar($filtros);
 
         if ($datos['filas'] === []) {
-            return back()->with(
+            return back()->withInput($request->query())->with(
                 'status',
                 'No hay registros para descargar'.($rango ? ' en el periodo '.$rango['descripcion'] : '').'.'
             );
@@ -146,7 +130,30 @@ class ReporteController extends Controller
             ? 'reporte_completo_'.$rango['etiqueta'].'.xlsx'
             : 'reporte_completo_'.now()->format('Ymd_His').'.xlsx';
 
-        return XlsxWriter::descargar($nombre, $datos['encabezados'], $datos['filas']);
+        $criterios = array_filter([
+            $filtros['accion'] ? 'Acción: '.$filtros['accion'] : null,
+            $filtros['area'] ? 'Área: '.$filtros['area'] : null,
+            $filtros['servicio_id'] ? 'Servicio ID: '.$filtros['servicio_id'] : null,
+        ]);
+
+        $reporte = [
+            'hoja' => 'Reporte completo',
+            'titulo' => 'REPORTE COMPLETO DE AUDITORÍAS',
+            'subtitulos' => [
+                'Periodo: '.$rango['descripcion'],
+                'Generado: '.now()->format('d/m/Y H:i'),
+                'Registros incluidos: '.count($datos['filas']),
+                'Filtros adicionales: '.($criterios !== [] ? implode(' | ', $criterios) : 'Ninguno'),
+            ],
+            'encabezados' => ['Fecha', 'Usuario', 'Responsable', 'Acción', 'Área', 'Proceso', 'Servicio', 'Material', 'Descripción'],
+            'anchos' => [20, 30, 30, 28, 18, 12, 30, 30, 60],
+            'filas' => array_map(
+                fn (array $fila) => array_map(fn ($valor) => ['v' => (string) $valor, 's' => 10], $fila),
+                $datos['filas']
+            ),
+        ];
+
+        return XlsxWriter::descargarReporte($nombre, $reporte);
     }
 
     private function filtros(PeriodoReporteRequest $request): array
@@ -217,8 +224,10 @@ class ReporteController extends Controller
             'AREA_VERDE_REGISTRADA',
             'AREA_VERDE_ACTUALIZADA',
             'INSTRUMENTAL_CREADO',
+            'INSTRUMENTAL_ACTIVADO',
             'INSTRUMENTAL_ACTUALIZADO',
             'INSTRUMENTAL_DESACTIVADO',
+            'INSTRUMENTAL_ELIMINADO_DEL_CONJUNTO',
         ];
     }
 
@@ -228,7 +237,7 @@ class ReporteController extends Controller
         $rango = $request->rango();
 
        $registros = Auditoria::query()
-            ->with(['proceso.servicio', 'proceso.material'])
+            ->with(['proceso.instrumentos.servicio', 'proceso.instrumentos.material'])
             ->whereNotIn('accion', AuditoriaService::ACCIONES_AUTENTICACION)
             ->where(function ($consulta) use ($usuario) {
                 $consulta
@@ -242,7 +251,7 @@ class ReporteController extends Controller
             ->get();
 
         if ($registros->isEmpty()) {
-            return back()->with(
+            return back()->withInput($request->query())->with(
                 'status',
                 'El usuario '.$usuario->nombre_completo.' no tiene actividades registradas en el periodo '.$rango['descripcion'].'.'
             );
@@ -252,10 +261,12 @@ class ReporteController extends Controller
 
         $reporte = [
             'hoja' => 'Reporte por usuario',
-            'titulo' => mb_strtoupper($usuario->nombre_completo),
+            'titulo' => 'REPORTE DE ACTIVIDAD POR USUARIO',
             'subtitulos' => [
+                'Usuario: '.$usuario->nombre_completo,
                 'Periodo: '.$rango['descripcion'],
                 'Generado: '.now()->format('d/m/Y H:i'),
+                'Registros incluidos: '.$registros->count(),
             ],
             'encabezados' => [
                 'Fecha',
@@ -269,11 +280,11 @@ class ReporteController extends Controller
             'anchos' => [18, 26, 14, 12, 26, 30, 60],
             'filas' => $registros->map(fn (Auditoria $auditoria) => [
                 ['v' => $auditoria->created_at?->format('d/m/Y H:i') ?? $pendiente, 's' => 11],
-                ['v' => (string) $auditoria->accion, 's' => 11],
-                ['v' => (string) $auditoria->area, 's' => 11],
+                ['v' => $auditoria->accion_etiqueta, 's' => 11],
+                ['v' => $auditoria->area_etiqueta, 's' => 11],
                 ['v' => $auditoria->proceso_id ? '#'.$auditoria->proceso_id : $pendiente, 's' => 11],
-                $auditoria->proceso?->servicio?->nombre ?? $pendiente,
-                $auditoria->proceso?->material?->nombre ?? $pendiente,
+                $auditoria->proceso?->instrumentos?->pluck('servicio.nombre')->filter()->unique()->implode(', ') ?: $pendiente,
+                $auditoria->proceso?->instrumentos?->pluck('material.nombre')->filter()->unique()->implode(', ') ?: $pendiente,
                 (string) $auditoria->descripcion,
             ])->all(),
         ];
@@ -292,14 +303,14 @@ class ReporteController extends Controller
 
         return [
             ['v' => '#'.$proceso->getKey(), 's' => 11],
-            $proceso->servicio?->nombre ?? '',
+            $proceso->instrumentos->pluck('servicio.nombre')->filter()->unique()->implode(', '),
             ['v' => (string) $proceso->estado_actual, 's' => 11],
             ['v' => $proceso->fecha?->format('d/m/Y') ?? '', 's' => 11],
             ['v' => (string) $proceso->turno, 's' => 11],
             ['v' => $this->hora($proceso->hora), 's' => 11],
             $proceso->personaRecibe?->nombre_completo ?? '',
             $proceso->personaEntrega?->nombre_completo ?? '',
-            $proceso->material?->nombre ?? '',
+            $proceso->instrumentos->pluck('material.nombre')->filter()->unique()->implode(', '),
             ['v' => (int) $proceso->cantidad_piezas, 's' => 11],
             ['v' => (string) $proceso->tipo_lavado, 's' => 11],
             ['v' => $proceso->equipo_biomedico_label ?: $pendiente, 's' => 11],

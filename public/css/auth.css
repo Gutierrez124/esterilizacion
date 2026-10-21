@@ -29,3 +29,15 @@ button:hover { background:#1FA3AF; color:#fff; }
 .eye-btn { position:absolute; right:6px; top:50%; transform:translateY(-50%); display:flex; align-items:center; justify-content:center; width:34px; min-height:34px; height:34px; border:none; border-radius:7px; background:transparent; color:#5b6b7c; cursor:pointer; padding:0; }
 .eye-btn:hover { background:#eef3f6; color:#0E5A64; }
 .is-hidden { display:none; }
+
+/* Refinamiento visual de acceso */
+body { background:radial-gradient(circle at 18% 15%,rgba(255,255,255,.2),transparent 30%),linear-gradient(135deg,#0e6570 0%,#168f9c 52%,#24b8c3 100%); font-family:Inter,"Segoe UI",Arial,sans-serif; }
+.card { max-width:440px; padding:36px 34px; border:1px solid rgba(255,255,255,.7); border-radius:18px; box-shadow:0 24px 70px rgba(4,45,55,.26); }
+.card h1 { color:#124d59; letter-spacing:-.035em; }
+.card p.sub { line-height:1.55; }
+input { min-height:46px; border-color:#d1dde3; border-radius:9px; padding:10px 12px; }
+input:focus { border-color:#20b8c5; box-shadow:0 0 0 4px rgba(32,184,197,.14); }
+button { min-height:46px; border-radius:9px; background:linear-gradient(135deg,#20b8c5,#148e9a); transition:transform .16s ease,box-shadow .16s ease; }
+button:hover { background:#13838d; box-shadow:0 7px 16px rgba(17,112,123,.2); transform:translateY(-1px); }
+.errors,.alert { border-radius:10px; }
+@media (max-width:520px) { body { padding:14px; } .card { padding:28px 22px; border-radius:15px; } }

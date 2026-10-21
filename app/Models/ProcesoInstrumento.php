@@ -12,6 +12,8 @@ class ProcesoInstrumento extends Model
 
     protected $fillable = [
         'proceso_id',
+        'servicio_id',
+        'material_id',
         'instrumento_id',
         'nombre_instrumento',
         'codigo_instrumento',
@@ -32,5 +34,15 @@ class ProcesoInstrumento extends Model
     public function instrumento()
     {
         return $this->belongsTo(Instrumento::class, 'instrumento_id');
+    }
+
+    public function servicio()
+    {
+        return $this->belongsTo(Servicio::class, 'servicio_id');
+    }
+
+    public function material()
+    {
+        return $this->belongsTo(Material::class, 'material_id');
     }
 }

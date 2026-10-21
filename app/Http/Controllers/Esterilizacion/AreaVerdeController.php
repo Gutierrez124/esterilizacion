@@ -13,7 +13,7 @@ class AreaVerdeController extends Controller
     public function index()
     {
 $procesos = ProcesoEsterilizacion::query()
-            ->with(['servicio', 'material', 'areaAzul'])
+            ->with(['instrumentos.servicio', 'instrumentos.material', 'areaAzul'])
             ->where('estado_actual', ProcesoEsterilizacion::ESTADO_AZUL)
             ->whereHas('areaAzul')
             ->whereDoesntHave('areaVerde')
@@ -26,7 +26,7 @@ $procesos = ProcesoEsterilizacion::query()
     public function create(ProcesoEsterilizacion $proceso)
     {
         abort_unless($proceso->estado_actual === ProcesoEsterilizacion::ESTADO_AZUL && $proceso->areaAzul()->exists() && ! $proceso->areaVerde()->exists(), 409);
-$proceso->load(['servicio', 'material']);
+$proceso->load(['instrumentos.servicio', 'instrumentos.material']);
 
         return view('esterilizacion.verde.create', [
             'proceso' => $proceso,
