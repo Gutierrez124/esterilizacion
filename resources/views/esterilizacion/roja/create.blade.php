@@ -182,9 +182,59 @@ async function abrirModalPiezas() {
     modalTotal.textContent=piezasActuales.reduce((sum,p)=>sum+p.cantidad_real,0);
 }
 function renderConfirmados() {
-    if (!confirmados.length) { listaConfirmados.innerHTML='<p class="muted">Aún no hay materiales confirmados.</p>'; }
-    else { listaConfirmados.innerHTML=''; confirmados.forEach((g,i)=>{ const section=document.createElement('div'); section.className='panel'; const header=document.createElement('div'); header.className='detail-actions'; header.innerHTML=`<strong>${g.servicio_nombre} · ${g.material_nombre}</strong><button type="button" class="btn red sm" data-quitar="${i}">Quitar</button>`; section.appendChild(header); const table=document.createElement('table'); table.innerHTML='<thead><tr><th>Instrumento</th><th>Código</th><th>Predeterminada</th><th>Real</th></tr></thead>'; const body=document.createElement('tbody'); g.piezas.forEach(p=>{const row=document.createElement('tr'); row.innerHTML=`<td>${p.nombre}</td><td>${p.codigo ?? '—'}</td><td>${p.cantidad_predeterminada}</td><td>${p.cantidad_real}</td>`; body.appendChild(row);}); table.appendChild(body); section.appendChild(table); listaConfirmados.appendChild(section); }); }
-    listaConfirmados.querySelectorAll('[data-quitar]').forEach(b=>b.addEventListener('click',()=>{confirmados.splice(Number(b.dataset.quitar),1); renderConfirmados(); actualizarTotal();}));
+    if (!confirmados.length) {
+        listaConfirmados.innerHTML = '<p class="muted">Aún no hay materiales confirmados.</p>';
+        return;
+    }
+
+    listaConfirmados.innerHTML = '';
+    confirmados.forEach((grupo, indice) => {
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'panel confirmed-material-card';
+
+        const encabezado = document.createElement('div');
+        encabezado.className = 'detail-actions confirmed-material-header';
+
+        const detalle = document.createElement('details');
+        detalle.className = 'instrument-group confirmed-material-details';
+
+        const titulo = document.createElement('summary');
+        titulo.textContent = `${grupo.servicio_nombre} \u00b7 ${grupo.material_nombre}`;
+        detalle.appendChild(titulo);
+
+        const tabla = document.createElement('table');
+        tabla.innerHTML = '<thead><tr><th>Instrumento</th><th>C\u00f3digo</th><th>Predeterminada</th><th>Real</th></tr></thead>';
+        const cuerpo = document.createElement('tbody');
+        grupo.piezas.forEach(pieza => {
+            const fila = document.createElement('tr');
+            [pieza.nombre, pieza.codigo ?? '\u2014', pieza.cantidad_predeterminada, pieza.cantidad_real].forEach(valor => {
+                const celda = document.createElement('td');
+                celda.textContent = valor;
+                fila.appendChild(celda);
+            });
+            cuerpo.appendChild(fila);
+        });
+        tabla.appendChild(cuerpo);
+        detalle.appendChild(tabla);
+
+        const quitar = document.createElement('button');
+        quitar.type = 'button';
+        quitar.className = 'btn red sm';
+        quitar.dataset.quitar = indice;
+        quitar.textContent = 'Quitar';
+
+        encabezado.append(detalle, quitar);
+        tarjeta.appendChild(encabezado);
+        listaConfirmados.appendChild(tarjeta);
+    });
+
+    listaConfirmados.querySelectorAll('[data-quitar]').forEach(boton => {
+        boton.addEventListener('click', () => {
+            confirmados.splice(Number(boton.dataset.quitar), 1);
+            renderConfirmados();
+            actualizarTotal();
+        });
+    });
 }
 function actualizarTotal(){ totalVisible.value=confirmados.reduce((sum,g)=>sum+g.piezas.reduce((s,p)=>s+p.cantidad_real,0),0); }
 function confirmarPiezas() {

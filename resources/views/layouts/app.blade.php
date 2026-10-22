@@ -360,6 +360,52 @@
         });
     });
 </script>
-</body>
+<script>
+(function () {
+    const logoutForm = document.querySelector('form.logout-form');
+    const csrfToken = logoutForm?.querySelector('input[name="_token"]')?.value;
+    if (!logoutForm || !csrfToken || !navigator.sendBeacon) return;
+
+    let navegacionInterna = false;
+    const logoutUrl = logoutForm.action;
+
+    document.addEventListener('click', function (event) {
+        const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+        if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank' || link.hasAttribute('download')) return;
+
+        try {
+            const destino = new URL(link.href, window.location.href);
+            if (destino.origin !== window.location.origin || destino.pathname !== window.location.pathname || destino.search !== window.location.search) {
+                navegacionInterna = true;
+            }
+        } catch (_) {}
+    }, true);
+
+    document.addEventListener('submit', function (event) {
+        const form = event.target;
+        if (!(form instanceof HTMLFormElement) || (form.target && form.target !== '_self')) return;
+
+        navegacionInterna = true;
+    }, true);
+
+    window.addEventListener('keydown', function (event) {
+        const recargar = event.key === 'F5' || ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'r');
+        const historial = event.altKey && (event.key === 'ArrowLeft' || event.key === 'ArrowRight');
+        if (recargar || historial) navegacionInterna = true;
+    }, true);
+
+    window.addEventListener('pageshow', function () {
+        navegacionInterna = false;
+    });
+
+    window.addEventListener('pagehide', function () {
+        if (navegacionInterna) return;
+
+        const datos = new URLSearchParams();
+        datos.set('_token', csrfToken);
+        navigator.sendBeacon(logoutUrl, datos);
+    }, { once: true });
+})();
+</script></body>
 </html>
 
